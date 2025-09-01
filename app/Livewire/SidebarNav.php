@@ -4,11 +4,10 @@ namespace App\Livewire;
 
 use Livewire\Component;
 
-class LoginSlider extends Component
+class SidebarNav extends Component
 {
     public function render()
     {
-        return view('livewire.login-slider');
+        return view('livewire.sidebar-nav');
     }
-    
 }

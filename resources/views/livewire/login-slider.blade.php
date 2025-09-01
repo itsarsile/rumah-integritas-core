@@ -1,4 +1,4 @@
-<div class="carousel w-full rounded-xl">
+<div class="hidden lg:carousel w-full rounded-xl">
     <div id="slide1" class="carousel-item relative w-full">
         <img src="https://picsum.photos/800/600?random=1" class="w-full" alt="Placeholder image 1" />
         <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">

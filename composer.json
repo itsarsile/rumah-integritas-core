@@ -10,12 +10,16 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "blade-ui-kit/blade-icons": "^1.8",
+        "brunocfalcao/blade-feather-icons": "^5.0",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "livewire/livewire": "^3.6",
+        "owenvoke/blade-fontawesome": "^2.9",
         "spatie/laravel-permission": "^6.21"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.16",
         "fakerphp/faker": "^1.23",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",
