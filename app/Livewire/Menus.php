@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 use Livewire\Component;
 
 class Menus extends Component
@@ -17,6 +18,7 @@ class Menus extends Component
             ->where('is_active', true)
             ->orderBy('order')
             ->get()
+            ->filter(fn($menu) => !$menu->route || Route::has($menu->route))
             ->groupBy('parent_id')
             ->toArray();
 

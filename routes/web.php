@@ -32,4 +32,10 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::get('/chat')->name('dashboard.chat');
     Route::get('/logs')->name('dashboard.logs');
     Route::get('/settings')->name('dashboard.settings');
+
+    Route::prefix('audit')->group(function () {
+        Route::get('/create', function () {
+            return view('audit.create');
+        })->name('dashboard.audit.create');
+    });
 });

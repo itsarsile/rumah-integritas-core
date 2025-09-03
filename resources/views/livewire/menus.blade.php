@@ -19,6 +19,7 @@
     @endphp
 
 
+        
 
     @foreach ($menus['root'] as $menu)
         <li>
