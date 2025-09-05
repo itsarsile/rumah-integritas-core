@@ -4,10 +4,12 @@ namespace App\Livewire\Audit;
 
 use App\Models\AuditReports;
 use App\Models\RegionalGovernmentOrganization;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
+#[Layout('layouts.app')]
 class Create extends Component
 {
     use WithFileUploads;
@@ -62,13 +64,13 @@ class Create extends Component
                 'report_title' => $this->title,
                 'report_description' => $this->description,
                 'findings_count' => (int) $this->findings,
-                'status' => 'draft',
+                'status' => 'pending',
                 'created_by' => auth()->id(),
             ];
 
             if (!empty($this->files)) {
                 foreach ($this->files as $file) {
-                    $path = $file->store('audit_reports', 'public');
+                    $path = $file->store('audit_reports', 'local');
                     $auditData['lhp_document_path'] = $path;
                     $auditData['lhp_document_name'] = $file->getClientOriginalName();
                     $auditData['lhp_document_mime_type'] = $file->getMimeType();

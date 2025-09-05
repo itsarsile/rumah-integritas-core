@@ -66,7 +66,7 @@ class AuditReports extends Model
      */
     public function getLhpDocumentUrlAttribute()
     {
-        return $this->lhp_document_path ? Storage::disk('public')->url($this->lhp_document_path) : null;
+        return $this->lhp_document_path ? Storage::disk('local')->url($this->lhp_document_path) : null;
     }
 
     /**
@@ -91,9 +91,9 @@ class AuditReports extends Model
     /**
      * Check if LHP document exists
      */
-    public function hasLhpDocument()
+    public function hasLhpDocument(): bool
     {
-        return !empty($this->lhp_document_path) && Storage::disk('public')->exists($this->lhp_document_path);
+        return !empty($this->lhp_document_path) && !empty($this->lhp_document_name);
     }
 
     /**
@@ -110,6 +110,24 @@ class AuditReports extends Model
     public function scopeWithoutFindings($query)
     {
         return $query->where('findings_count', 0);
+    }
+
+    public function getFileUrl(): string
+    {
+        if ($this->hasLhpDocument()) {
+            return route('audit.files', $this->id); // Use ID instead of path
+        }
+        return '';
+    }
+    
+    public function getFilePath(): string
+    {
+        return storage_path('app/' . $this->lhp_document_path);
+    }
+    
+    public function fileExists(): bool
+    {
+        return $this->hasLhpDocument() && file_exists($this->getFilePath());
     }
 
     /**

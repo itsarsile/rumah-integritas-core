@@ -139,10 +139,10 @@
                                 <td>
                                     <div class="badge badge-outline">{{ $role->guard_name }}</div>
                                 </td>
-                                <td>
-                                    <div class="flex flex-wrap gap-1">
+                                <td class="align-top">
+                                    <div class="flex flex-wrap gap-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
                                         @forelse($role->permissions as $permission)
-                                            <div class="badge badge-primary badge-sm">{{ $permission->name }}</div>
+                                            <div class="badge badge-primary badge-sm whitespace-nowrap">{{ $permission->name }}</div>
                                         @empty
                                             <span class="text-sm opacity-50">No permissions</span>
                                         @endforelse

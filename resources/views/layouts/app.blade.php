@@ -13,12 +13,13 @@
         <div class="drawer lg:drawer-open">
                 <input id="my-drawer" type="checkbox" class="drawer-toggle" />
                 <div class="drawer-content">
-                        <livewire:header-nav title="{{ $title }}" />
-                        <div class="p-6 space-y-6">
+                        <livewire:header-nav title="{{ $title ?? 'Page Title' }}" />
+                        <div class="p-6 space-y-6 bg-base-200 h-full">
                                 {{ $slot }}
                         </div>
                 </div>
-                <div class="drawer-side bg-base-200">
+                @auth
+                <div class="drawer-side border-r ">
                         <div class="flex items-center gap-4 p-4">
                                 <x-app.logo class="w-10" />
                                 <h1 class="mt-2">
@@ -41,11 +42,10 @@
                                 </div>
 
                         </div>
-                        <!-- For menu section -->                      
-                         <livewire:menus />
-
-
+                        <!-- For menu section -->
+                        <livewire:menus />
                 </div>
+                @endauth
         </div>
         @livewireScripts
 </body>
