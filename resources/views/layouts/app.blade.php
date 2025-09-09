@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{{ config('app.name') }} - {{ $title ?? 'Page Title' }}</title>
         @vite('resources/css/app.css')
+        @vite('resources/js/app.js')
         @livewireStyles
 </head>
 
@@ -19,7 +20,7 @@
                         </div>
                 </div>
                 @auth
-                <div class="drawer-side border-r ">
+                <div class="drawer-side border-r bg-white">
                         <div class="flex items-center gap-4 p-4">
                                 <x-app.logo class="w-10" />
                                 <h1 class="mt-2">

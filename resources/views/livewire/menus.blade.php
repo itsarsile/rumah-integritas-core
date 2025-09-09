@@ -1,4 +1,4 @@
-<ul class="menu text-base-content min-h-full w-80 p-4">
+<ul class="menu text-base-content min-h-full w-80 p-4 bg-white">
     @php
         function isMenuActive($menu, $children) {
             $currentRoute = request()->route()->getName();

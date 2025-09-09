@@ -53,7 +53,7 @@ class AuditReports extends Model
 
     public function chatRoom()
     {
-        return $this->hasOne(ChatRoom::class);
+        return $this->hasOne(ChatRoom::class, 'audit_report_id');
     }
 
     public function creator()
@@ -136,11 +136,20 @@ class AuditReports extends Model
     public function getStatusBadgeAttribute()
     {
         return match($this->status) {
-            'draft' => 'badge-warning',
-            'in_progress' => 'badge-info',
-            'completed' => 'badge-primary',
-            'published' => 'badge-success',
+            'pending' => 'badge-warning',
+            'rejected' => 'badge-error',
+            'accepted' => 'badge-success',
             default => 'badge-neutral',
+        };
+    }
+
+    public function getStatusText()
+    {
+        return match($this->status) {
+            'pending' => 'Menunggu',
+            'rejected' => 'Ditolak',
+            'accepted' => 'Diterima',
+            default => 'Unknown',
         };
     }
 }

@@ -6,5 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class ChatRoomParticipant extends Model
 {
-    //
+    public $fillable = [
+        'user_id',
+        'chat_room_id',
+        'role',
+        'joined_at',
+    ];
 }

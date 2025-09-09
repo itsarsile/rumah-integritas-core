@@ -1,14 +1,17 @@
 <?php
 
+use App\Http\Controllers\ChatController;
 use App\Livewire\Audit\Master as AuditMaster;
 use App\Livewire\Audit\Show as AuditShow;
 use App\Livewire\Audit\Create as AuditCreate;
 use App\Livewire\Chat;
+use App\Livewire\ChatRoom;
 use App\Livewire\Home;
 use App\Livewire\LoginForm;
 use App\Livewire\RoleManagement;
 use App\Livewire\UserManagement;
 use App\Models\AuditReports;
+use App\Models\ChatMessage;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -35,7 +38,6 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::get('/consumption')->name('dashboard.consumption');
     Route::get('/maintenance')->name('dashboard.maintenance');
     Route::get('/agenda')->name('dashboard.agenda');
-    Route::get('/chat', Chat::class)->name('dashboard.chat');
     Route::get('/logs')->name('dashboard.logs');
     Route::get('/settings')->name('dashboard.settings');
 
@@ -43,6 +45,17 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
         Route::get("/", AuditMaster::class)->name('dashboard.audit.master');
 
         Route::get('/create', AuditCreate::class)->name('dashboard.audit.create');
+        Route::get('/chat/{id}', ChatRoom::class)->name('dashboard.audit.chat');
+        
+        Route::get('/chat', function() {
+            $firstAudit = \App\Models\AuditReports::first();
+            if ($firstAudit) {
+                return redirect()->route('dashboard.audit.chat', ['id' => $firstAudit->id]);
+            }
+            return redirect()->route('dashboard.audit.master')->with('error', 'No audit reports found');
+        })->name('dashboard.chat');
+
+        Route::get('/chat/download/{id}', [ChatController::class, 'downloadFile'])->name('dashboard.audit.chat.download');
 
         Route::get('/{id}', AuditShow::class)->name('dashboard.audit.show');
         

@@ -8,6 +8,20 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ChatMessage extends Model
 {
     use SoftDeletes;
+
+    public $fillable = [
+        'user_id',
+        'chat_room_id',
+        'message_type',
+        'content',
+        'file_path',
+        'file_name',
+        'file_size',
+        'file_mime_type',
+        'is_edited',
+        'edited_at',
+        'reply_to_message_id',
+    ];
     
     public function chatRoom()
     {

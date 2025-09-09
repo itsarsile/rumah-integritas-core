@@ -1,4 +1,4 @@
-<div class="sticky top-0 z-10 navbar bg-base-100 border-b-2 border-base-200 {{ @request()->routeIs('login') ? 'hidden' : '' }}">
+<div class="sticky top-0 navbar z-10 bg-base-100 border-b-2 border-base-200 {{ @request()->routeIs('login') ? 'hidden' : '' }}">
     <div class="navbar-start">
         <a class="btn btn-ghost text-xl">{{ $title }}</a>
     </div>
