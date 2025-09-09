@@ -158,7 +158,7 @@
                                                         </svg>
                                                         <span class="text-sm font-medium">{{ $msg['file_name'] }}</span>
                                                     </div>
-                                                    <div class="text-xs text-base-content/70">
+                                                    <div class="text-xs text-primary-content/70">
                                                         {{ $this->formatFileSize($msg['file_size']) }}
                                                     </div>
                                                     <a href="{{ route('dashboard.audit.chat.download', ['id' => $msg['id']]) }}" 
@@ -175,7 +175,7 @@
                                         </div>
                                     </div>
                                     <div class="chat-footer opacity-50 text-xs mt-1">
-                                        User {{ $msg['user_id'] }} • {{ \Carbon\Carbon::parse($msg['created_at'])->format('H:i') }}
+                                        {{ $msg['user']['name'] }} • {{ \Carbon\Carbon::parse($msg['created_at'])->format('H:i') }}
                                     </div>
                                 </div>
                             </div>
