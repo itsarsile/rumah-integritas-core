@@ -8,6 +8,7 @@ use App\Livewire\Chat;
 use App\Livewire\ChatRoom;
 use App\Livewire\Home;
 use App\Livewire\LoginForm;
+use App\Livewire\MasterRequest;
 use App\Livewire\RoleManagement;
 use App\Livewire\UserManagement;
 use App\Models\AuditReports;
@@ -20,7 +21,7 @@ Route::get('/', function () {
 
 Route::get('/login', LoginForm::class)->middleware('guest')->name('login');
 
-Route::get('/dashboard', function () {
+Route::get('/', function () {
     return redirect()->intended('dashboard');
 })->middleware('auth')->name('dashboard.index');
 
@@ -35,7 +36,20 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::get('/role-management', RoleManagement::class)->name('dashboard.role-management');
 
 
-    Route::get('/consumption')->name('dashboard.consumption');
+    Route::prefix('/consumption')->group(function () {
+        Route::get('/', \App\Livewire\Consumption\Master::class)->name('dashboard.consumption.master');
+        Route::get('/show/{id}', \App\Livewire\Consumption\Show::class)->name('dashboard.consumption.show');
+        Route::get('/create', \App\Livewire\Consumption\Create::class)->name('dashboard.consumption.create');
+    });
+
+    Route::prefix('/maintenance')->group(function() {
+        Route::get('/create', \App\Livewire\Maintenance\Create::class)->name('dashboard.maintenance.create');
+    });
+
+    Route::prefix('/agenda')->group(function() {
+        Route::get('/create', \App\Livewire\Agenda\Create::class)->name('dashboard.agenda.create');
+    });
+
     Route::get('/maintenance')->name('dashboard.maintenance');
     Route::get('/agenda')->name('dashboard.agenda');
     Route::get('/logs')->name('dashboard.logs');
@@ -64,5 +78,7 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
             return Storage::response($file->lhp_document_path);
         })->name('audit.files');
     });
+
+    Route::get('/master-request', MasterRequest::class)->name('dashboard.master-request');
 });
 

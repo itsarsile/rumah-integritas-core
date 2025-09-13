@@ -15,6 +15,7 @@ class AuditReportsTable extends Component
         $this->data = DB::table('audit_reports')
             ->join('users', 'audit_reports.created_by', '=', 'users.id')
             ->select('audit_reports.*', 'users.name as user_name', 'users.avatar as user_avatar')
+            ->limit(5)
             ->get();
     } 
 

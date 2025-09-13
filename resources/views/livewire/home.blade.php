@@ -42,23 +42,22 @@
             <livewire:dashboard.table.audit-reports-table />
         </div>
     </div>
-     <div class="card card-border rounded-md">
-        <div class="card-body overflow-x-auto">
+    <div class="card card-border rounded-md">
+        <div class="card-body">
             <div class="card-title font-normal justify-between">
-                Sistem Audit & Pengawasan
-                <a class="btn" href="{{ route('dashboard.audit.master') }}">More</a>
+                Manajemen Konsumsi
+                <a class="btn" href="{{ route('dashboard.consumption.master') }}">More</a>
             </div>
-            <livewire:dashboard.table.audit-reports-table />
+            <livewire:dashboard.table.consumption-reports-table />
         </div>
     </div>
-
      <div class="card card-border rounded-md">
         <div class="card-body">
             <div class="card-title font-normal justify-between">
-                Sistem Audit & Pengawasan
-                <a class="btn" href="{{ route('dashboard.audit.master') }}">More</a>
+                Manajemen Pemeliharaan
+                <a class="btn" href="{{ route('dashboard.consumption.master') }}">More</a>
             </div>
-            <livewire:dashboard.table.audit-reports-table />
+            <livewire:dashboard.table.maintenance-reports-table />
         </div>
     </div>
 
