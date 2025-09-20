@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Debugbar;
 
 class Create extends Component
 {
@@ -15,6 +16,8 @@ class Create extends Component
     public $date;
     public $location;
     public $reviewed_by;
+
+    public $person_in_charge_id;
 
     public $personInCharges;
 
@@ -30,6 +33,7 @@ class Create extends Component
             'date'        => 'required|date',
             'location'    => 'required|string|max:255',
             'reviewed_by' => 'nullable|exists:users,id',
+            'person_in_charge_id' => 'nullable|exists:users,id',
         ]);
 
         $requestCode = 'AGENDA-' . now()->format('Ymd-His') . '-' . Str::random(5);
@@ -40,8 +44,10 @@ class Create extends Component
             'date'         => $this->date,
             'location'     => $this->location,
             'created_by'   => Auth::id(),
-            'reviewed_by'  => $this->reviewed_by,
+            'pic_id'       => $this->person_in_charge_id,
             'status'       => 'pending',
+            'created_by' => now(),
+
         ]);
 
         session()->flash('success', 'Agenda berhasil dibuat');

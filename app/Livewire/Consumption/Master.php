@@ -28,10 +28,8 @@ class Master extends DataTable
             ['key' => 'audience_count', 'label' => 'Jumlah'],
             ['key' => 'description', 'label' => 'Deskripsi'],
             ['key' => 'status', 'label' => 'Status', 'format' => 'status', 'class' => ''],
-            ['key'=> 'actions', 'label'=> 'Aksi', 'view' => 'components.consumption-actions', 'viewData' => ['consumption' => '']],
+            ['key' => 'actions', 'label' => 'Aksi', 'view' => 'components.consumption-actions', 'viewData' => ['consumption' => '']],
         ];
-
-        Debugbar::info($this->columns);
 
         parent::mount();
     }

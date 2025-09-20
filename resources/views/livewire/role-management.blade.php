@@ -79,7 +79,7 @@
     </div>
 
     {{-- Roles Table --}}
-    <div class="card bg-base-100 shadow-sm">
+    <div class="card bg-base-100 shadow-sm overflow-visible">
         <div class="card-body p-0">
             <div class="overflow-x-auto">
                 <table class="table table-zebra">
@@ -153,7 +153,7 @@
                                     <div class="text-xs opacity-50">{{ $role->created_at->diffForHumans() }}</div>
                                 </td>
                                 <td>
-                                    <div class="dropdown">
+                                    <div class="dropdown dropdown-end">
                                         <div tabindex="0" class="btn btn-ghost btn-xs">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -162,7 +162,7 @@
                                             </svg>
                                         </div>
                                         <ul tabindex="0"
-                                            class="menu dropdown-content z-1 p-2 shadow bg-base-100 rounded-box w-52">
+                                            class="menu dropdown-content z-50 p-2 shadow bg-base-100 rounded-box w-52">
                                             <li><a wire:click="viewRole({{ $role->id }})">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor"
                                                         viewBox="0 0 24 24">

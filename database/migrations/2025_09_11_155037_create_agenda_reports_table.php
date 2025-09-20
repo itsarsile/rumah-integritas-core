@@ -13,10 +13,14 @@ return new class extends Migration
     {
         Schema::create('agenda_reports', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->datetime('date');
-            $table->text('location');
-            $table->foreignId('pic_id')->references('id')->on('users');
+            $table->string("title");
+            $table->string('request_code', 50)->unique();
+            $table->date('date');
+            $table->string('location');
+            $table->foreignId('created_by')->references('id')->on('users');
+            $table->timestamp('reviewed_at')->nullable();
+            $table->foreignId('reviewed_by')->nullable()->references('id')->on('users');
+            $table->enum('status', ['pending', 'approved', 'rejected']);
             $table->timestamps();
         });
     }

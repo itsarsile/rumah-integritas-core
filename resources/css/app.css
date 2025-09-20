@@ -1,7 +1,46 @@
 @import 'tailwindcss';
-@plugin 'daisyui' {
-    themes: light --default;
+/* Load daisyUI plugin */
+@plugin "daisyui";
+/* Define custom theme using daisyUI v5 syntax */
+@plugin "daisyui/theme" {
+  name: "ri";
+  default: false;
+  prefersdark: false;
+  color-scheme: "light";
+  /* Base surfaces */
+  --color-base-100: #F8FAFC;
+  --color-base-200: #EEF2F7;
+  --color-base-300: #E5E7EB;
+  --color-base-content: #111827;
+  /* Brand colors */
+  --color-primary: #3B82F6;          /* blue */
+  --color-primary-content: #F0F7FF;
+  --color-secondary: #64748B;        /* slate */
+  --color-secondary-content: #F8FAFC;
+  --color-accent: #22C55E;           /* green */
+  --color-accent-content: #0B3117;
+  --color-neutral: #111827;          /* near black */
+  --color-neutral-content: #E5E7EB;
+  /* Semantic */
+  --color-info: #0EA5E9;
+  --color-info-content: #072736;
+  --color-success: #22C55E;
+  --color-success-content: #0B3117;
+  --color-warning: #F59E0B;
+  --color-warning-content: #4A2F01;
+  --color-error: #EF4444;
+  --color-error-content: #3C0D0D;
+  /* Radii and misc tokens */
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.75rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
 }
+
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';

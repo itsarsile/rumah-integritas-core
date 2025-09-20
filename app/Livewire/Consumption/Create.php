@@ -48,7 +48,7 @@ class Create extends Component
         ]);
 
         try {
-            if (!Auth::user()->hasPermissionTo('create consumption reports')) {
+            if (!Auth::user()->hasPermissionTo('create consumption')) {
                 Debugbar::error('Permission denied for user: ' . Auth::user()->id);
                 session()->flash('error', 'Anda tidak memiliki izin untuk membuat permintaan konsumsi');
                 return redirect()->back();

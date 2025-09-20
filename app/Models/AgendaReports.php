@@ -16,9 +16,14 @@ class AgendaReports extends Model
         'location',
         'created_by',
         'reviewed_at',
-        'reviewed_by',
+        'pic_id',
         'status',
     ];
+
+    public function personInCharge()
+    {
+        return $this->belongsTo(User::class, 'pic_id');
+    }
 
     public function creator()
     {

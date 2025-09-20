@@ -36,14 +36,14 @@
 
             <!-- Reviewer -->
             <div class="form-control">
-                <label class="label"><span class="label-text">Reviewer (Opsional)</span></label>
-                <select wire:model="reviewed_by" class="select select-bordered w-full">
-                    <option value="">Pilih Reviewer</option>
+                <label class="label"><span class="label-text">Penanggung Jawab</span></label>
+                <select wire:model="person_in_charge_id" class="select select-bordered w-full">
+                    <option value="">Pilih Penanggung Jawab</option>
                     @foreach ($personInCharges as $user)
                         <option value="{{ $user->id }}">{{ $user->name }}</option>
                     @endforeach
                 </select>
-                @error('reviewed_by') <span class="text-error text-sm">{{ $message }}</span> @enderror
+                @error('person_in_charge_id') <span class="text-error text-sm">{{ $message }}</span> @enderror
             </div>
 
             <!-- Tombol -->

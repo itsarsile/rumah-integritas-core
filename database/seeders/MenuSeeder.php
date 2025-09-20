@@ -12,33 +12,84 @@ class MenuSeeder extends Seeder
      */
     public function run(): void
     {
-        $menus = [
-            ['name' => 'Dashboard', 'icon' => 'feathericon-home', 'route' => '/dashboard', 'order' => 1],
-            ['name' => 'Sistem Audit & Pengawasan', 'icon' => 'audit', 'route' => null, 'order' => 2],
-            ['name' => 'Sistem Administrasi Operasional', 'icon' => 'admin-ops', 'route' => null, 'order' => 3, 'parent_id' => null],
-            ['name' => 'Manajemen Konsumsi', 'icon' => '', 'route' => '/consumption', 'order' => 1, 'parent_id' => 3],
-            ['name' => 'Manajemen Pemeliharaan', 'icon' => '', 'route' => '/maintenance', 'order' => 2, 'parent_id' => 3],
-            ['name' => 'Manajemen Agenda', 'icon' => '', 'route' => '/agenda', 'order' => 3, 'parent_id' => 3],
-            ['name' => 'Percakapan', 'icon' => 'chat', 'route' => '/chat', 'order' => 4],
-            ['name' => 'Manajemen User', 'icon' => 'feathericon-user', 'route' => null, 'order' => 5],
-            ['name' => 'Role', 'icon' => '', 'route' => '/user-management', 'order' => 1, 'parent_id' => 8],
-            ['name' => 'User', 'icon' => '', 'route' => '/role-management', 'order' => 2, 'parent_id' => 8],
-            ['name' => 'Log Activity', 'icon' => 'log', 'route' => '/logs', 'order' => 6],
-            ['name' => 'Settings', 'icon' => 'feathericon-settings', 'route' => '/settings', 'order' => 7],
-            ['name' => 'Logout', 'icon' => 'feathericon-log-out', 'route' => '/logout', 'order' => 8],
-        ];
+        // Create or update base menus according to requested structure
+        // All routes use named routes to be compatible with the menus component.
 
-        foreach ($menus as $menu) {
-            DB::table('menus')->insert([
-                'name' => $menu['name'],
-                'icon' => $menu['icon'] ?: null,
-                'route' => $menu['route'] ?: null,
-                'order' => $menu['order'],
-                'parent_id' => isset($menu['parent_id']) ? $menu['parent_id'] : null,
+        // Root: Dashboard
+        $dashboardId = $this->upsertMenu('Dashboard', null, 'dashboard', 1);
+
+        // Root: Sistem Audit & Pengawasan (klik ke halaman buat audit)
+        $sapId = $this->upsertMenu('Sistem Audit & Pengawasan', null, 'dashboard.audit.create', 2);
+
+        // Root: Sistem Administrasi Operasional (parent)
+        $saoId = $this->upsertMenu('Sistem Administrasi Operasional', null, null, 3);
+
+        // Children under SAO (use create pages)
+        $this->upsertMenu('Manajemen Konsumsi', $saoId, 'dashboard.consumption.create', 1);
+        $this->upsertMenu('Manajemen Pemeliharaan', $saoId, 'dashboard.maintenance.create', 2);
+        $this->upsertMenu('Manajemen Agenda', $saoId, 'dashboard.agenda.create', 3);
+
+        // Root: Percakapan
+        $chatId = $this->upsertMenu('Percakapan', null, 'dashboard.chat', 4);
+        // Root: Logout (special handling in menus view renders POST form)
+        $logoutId = $this->upsertMenu('Logout', null, 'logout', 99, 'feathericon-log-out');
+
+        // Assign these menus to 'user' role
+        $userRoleId = DB::table('roles')->where('name', 'user')->value('id');
+        if ($userRoleId) {
+            $menuIds = DB::table('menus')
+                ->whereIn('name', [
+                    'Dashboard',
+                    'Sistem Audit & Pengawasan',
+                    'Sistem Administrasi Operasional',
+                    'Manajemen Konsumsi',
+                    'Manajemen Pemeliharaan',
+                    'Manajemen Agenda',
+                    'Percakapan',
+                    'Logout',
+                ])->pluck('id');
+
+            foreach ($menuIds as $menuId) {
+                $exists = DB::table('menu_roles')
+                    ->where('menu_id', $menuId)
+                    ->where('role_id', $userRoleId)
+                    ->exists();
+                if (!$exists) {
+                    DB::table('menu_roles')->insert([
+                        'menu_id' => $menuId,
+                        'role_id' => $userRoleId,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+            }
+        }
+    }
+
+    private function upsertMenu(string $name, ?int $parentId, ?string $route, int $order, ?string $icon = null): int
+    {
+        $exists = DB::table('menus')->where('name', $name)->first();
+        if ($exists) {
+            DB::table('menus')->where('id', $exists->id)->update([
+                'icon' => $icon,
+                'route' => $route,
+                'parent_id' => $parentId,
+                'order' => $order,
                 'is_active' => true,
-                'created_at' => now(),
                 'updated_at' => now(),
             ]);
+            return (int) $exists->id;
         }
+
+        return (int) DB::table('menus')->insertGetId([
+            'name' => $name,
+            'icon' => $icon,
+            'route' => $route,
+            'parent_id' => $parentId,
+            'order' => $order,
+            'is_active' => true,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 }

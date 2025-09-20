@@ -6,6 +6,7 @@ use App\Models\AssetType;
 use App\Models\Division;
 use App\Models\MaintenanceReports;
 use App\Models\MaintenanceReportImage;
+use App\Models\ActivityLog;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -66,6 +67,21 @@ class Create extends Component
                 ]);
             }
         }
+
+        // Log activity: submission
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'module' => 'maintenance',
+            'action' => 'submitted',
+            'entity_type' => MaintenanceReports::class,
+            'entity_id' => $report->id,
+            'description' => 'Mengajukan permintaan pemeliharaan (' . $report->request_code . ')',
+            'metadata' => [
+                'asset_type_id' => $this->assetId,
+                'division_id' => $this->divisionId,
+                'priority' => $this->priority,
+            ],
+        ]);
 
         session()->flash('message', 'Permintaan pemeliharaan berhasil diajukan!');
     }

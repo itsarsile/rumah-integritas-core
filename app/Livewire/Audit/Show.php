@@ -31,7 +31,7 @@ class Show extends Component
     public function mount($id)
     {
         $this->id = $id;
-        $this->audit = AuditReports::with(['creator', 'regionalGovernmentOrganization'])->findOrFail($id);
+    $this->audit = AuditReports::with(['creator', 'regionalGovernmentOrganization'])->findOrFail($id);
     }
 
     public function deleteFile()

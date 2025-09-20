@@ -51,13 +51,22 @@
             <livewire:dashboard.table.consumption-reports-table />
         </div>
     </div>
-     <div class="card card-border rounded-md">
+    <div class="card card-border rounded-md">
         <div class="card-body">
             <div class="card-title font-normal justify-between">
                 Manajemen Pemeliharaan
-                <a class="btn" href="{{ route('dashboard.consumption.master') }}">More</a>
+                <a class="btn" href="{{ route('dashboard.maintenance.master') }}">More</a>
             </div>
             <livewire:dashboard.table.maintenance-reports-table />
+        </div>
+    </div>
+    <div class="card card-border rounded-md">
+        <div class="card-body">
+            <div class="card-title font-normal justify-between">
+                Manajemen Agenda
+                <a class="btn" href="{{ route('dashboard.agenda.master') }}">More</a>
+            </div>
+            <livewire:dashboard.table.agenda-reports-table />
         </div>
     </div>
 

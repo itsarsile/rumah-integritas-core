@@ -11,9 +11,12 @@ use App\Livewire\LoginForm;
 use App\Livewire\MasterRequest;
 use App\Livewire\RoleManagement;
 use App\Livewire\UserManagement;
+use App\Livewire\Admin\Approvals as AdminApprovals;
+use App\Livewire\Admin\RequestTracking as AdminRequestTracking;
 use App\Models\AuditReports;
 use App\Models\ChatMessage;
 use Illuminate\Support\Facades\Route;
+use App\Livewire\Logs as ActivityLogs;
 
 Route::get('/', function () {
     return view('login');
@@ -42,26 +45,36 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
         Route::get('/create', \App\Livewire\Consumption\Create::class)->name('dashboard.consumption.create');
     });
 
-    Route::prefix('/maintenance')->group(function() {
+    Route::prefix('/maintenance')->group(function () {
         Route::get('/create', \App\Livewire\Maintenance\Create::class)->name('dashboard.maintenance.create');
+        Route::get('/', \App\Livewire\Maintenance\Master::class)->name('dashboard.maintenance.master');
+        Route::get('/show/{id}', \App\Livewire\Maintenance\Show::class)->name('dashboard.maintenance.show');
     });
 
-    Route::prefix('/agenda')->group(function() {
+    Route::prefix('/agenda')->group(function () {
         Route::get('/create', \App\Livewire\Agenda\Create::class)->name('dashboard.agenda.create');
+        Route::get('/', \App\Livewire\Agenda\Master::class)->name('dashboard.agenda.master');
+        Route::get('/show/{id}', \App\Livewire\Consumption\Show::class)->name('dashboard.agenda.show');
     });
 
-    Route::get('/maintenance')->name('dashboard.maintenance');
-    Route::get('/agenda')->name('dashboard.agenda');
-    Route::get('/logs')->name('dashboard.logs');
+    Route::get('/logs', ActivityLogs::class)->name('dashboard.logs');
     Route::get('/settings')->name('dashboard.settings');
+    
+    // Admin-only approvals page
+    Route::get('/approvals', AdminApprovals::class)
+        ->name('dashboard.approvals');
+
+    // Admin-only request tracking page
+    Route::get('/tracking', AdminRequestTracking::class)
+        ->name('dashboard.tracking');
 
     Route::prefix('audit')->group(function () {
         Route::get("/", AuditMaster::class)->name('dashboard.audit.master');
 
         Route::get('/create', AuditCreate::class)->name('dashboard.audit.create');
         Route::get('/chat/{id}', ChatRoom::class)->name('dashboard.audit.chat');
-        
-        Route::get('/chat', function() {
+
+        Route::get('/chat', function () {
             $firstAudit = \App\Models\AuditReports::first();
             if ($firstAudit) {
                 return redirect()->route('dashboard.audit.chat', ['id' => $firstAudit->id]);
@@ -72,7 +85,7 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
         Route::get('/chat/download/{id}', [ChatController::class, 'downloadFile'])->name('dashboard.audit.chat.download');
 
         Route::get('/{id}', AuditShow::class)->name('dashboard.audit.show');
-        
+
         Route::get('/files/{id}', function ($id) {
             $file = AuditReports::findOrFail($id);
             return Storage::response($file->lhp_document_path);
@@ -81,4 +94,3 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
 
     Route::get('/master-request', MasterRequest::class)->name('dashboard.master-request');
 });
-
