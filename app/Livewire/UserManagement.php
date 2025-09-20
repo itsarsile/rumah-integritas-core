@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\User;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Hash;
@@ -429,6 +430,7 @@ class UserManagement extends Component
         session()->flash('message', "{$count} user(s) deleted successfully.");
     }
 
+    #[Title('Manajemen Pengguna')]
     public function render()
     {
         $users = $this->getUsers();

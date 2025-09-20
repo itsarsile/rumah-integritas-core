@@ -13,6 +13,8 @@ use App\Livewire\RoleManagement;
 use App\Livewire\UserManagement;
 use App\Livewire\Admin\Approvals as AdminApprovals;
 use App\Livewire\Admin\RequestTracking as AdminRequestTracking;
+use App\Livewire\Account\Settings as AccountSettings;
+use App\Livewire\Admin\AccessControl as AdminAccessControl;
 use App\Models\AuditReports;
 use App\Models\ChatMessage;
 use Illuminate\Support\Facades\Route;
@@ -58,7 +60,7 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     });
 
     Route::get('/logs', ActivityLogs::class)->name('dashboard.logs');
-    Route::get('/settings')->name('dashboard.settings');
+    Route::get('/settings', AccountSettings::class)->name('dashboard.settings');
     
     // Admin-only approvals page
     Route::get('/approvals', AdminApprovals::class)
@@ -67,6 +69,10 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     // Admin-only request tracking page
     Route::get('/tracking', AdminRequestTracking::class)
         ->name('dashboard.tracking');
+
+    // Admin-only RBAC management per module
+    Route::get('/access-control', AdminAccessControl::class)
+        ->name('dashboard.access-control');
 
     Route::prefix('audit')->group(function () {
         Route::get("/", AuditMaster::class)->name('dashboard.audit.master');

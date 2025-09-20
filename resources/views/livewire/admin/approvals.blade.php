@@ -51,7 +51,7 @@
                                             <td>{{ data_get($row, $key) }}</td>
                                         @endforeach
                                         <td>
-                                            <span class="badge badge-warning">Pending</span>
+                                            <span class="badge badge-warning">Menunggu</span>
                                         </td>
                                         <td class="space-x-2">
                                             <button class="btn btn-xs btn-success" wire:click="approve('{{ $sec['key'] }}', {{ $row->id }})">Setujui</button>
@@ -72,4 +72,3 @@
         </div>
     </div>
 </div>
-

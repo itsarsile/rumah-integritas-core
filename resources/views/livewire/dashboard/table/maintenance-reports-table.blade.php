@@ -16,15 +16,14 @@
                 <td>{{ $item->created_at }}</td>
                 <td>Pemeliharaan</td>
                 <td class="flex items-center gap-2">
-                    <div class="avatar {{ $item->user_avatar ? '' : 'avatar-placeholder' }}">
+                    <div class="avatar">
                         @if ($item->user_avatar)
-                            <div>
+                            <div class="w-6 h-6 rounded-full ring ring-primary ring-offset-base-100 ring-offset-1 overflow-hidden">
                                 <img src="{{ $item->user_avatar }}" alt="Avatar of {{ $item->user_name }}" />
                             </div>
                         @else
-                            <div class="w-6 bg-neutral text-neutral-content rounded-full">
-                                <span
-                                    class="text-xs text-center">{{ strtoupper(substr($item->user_name, 0, 1)) }}</span>
+                            <div class="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-semibold">
+                                {{ strtoupper(substr($item->user_name, 0, 1)) }}
                             </div>
                         @endif
                     </div>

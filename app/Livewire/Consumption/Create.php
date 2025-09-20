@@ -9,9 +9,13 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
+use App\Models\ActivityLog;
 use Livewire\WithFileUploads;
 use Debugbar; // Add Debugbar facade
 
+use Livewire\Attributes\Title;
+
+#[Title('Buat Permintaan Konsumsi')]
 class Create extends Component
 {
     use WithFileUploads;
@@ -81,6 +85,20 @@ class Create extends Component
 
             Debugbar::info('Attempting to create ConsumptionReport', $requestData);
             $report = ConsumptionReport::create($requestData);
+            // Log activity for submission
+            ActivityLog::create([
+                'user_id' => Auth::id(),
+                'module' => 'consumption',
+                'action' => 'submitted',
+                'entity_type' => ConsumptionReport::class,
+                'entity_id' => $report->id,
+                'description' => 'Mengajukan permintaan konsumsi (' . $report->request_code . ')',
+                'metadata' => [
+                    'consumption_type_id' => $this->consumption_type_id,
+                    'division_id' => $this->division_id,
+                    'audience_count' => $this->audience_count,
+                ],
+            ]);
             Debugbar::info('ConsumptionReport created successfully', $report->toArray());
             session()->flash('message', 'Permintaan konsumsi berhasil dibuat');
             Debugbar::info('Redirecting to consumption.index');

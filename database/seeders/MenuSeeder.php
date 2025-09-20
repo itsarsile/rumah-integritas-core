@@ -31,6 +31,8 @@ class MenuSeeder extends Seeder
 
         // Root: Percakapan
         $chatId = $this->upsertMenu('Percakapan', null, 'dashboard.chat', 4);
+        // Settings page for user profile
+        $settingsId = $this->upsertMenu('Setting', null, 'dashboard.settings', 90, 'feathericon-settings');
         // Root: Logout (special handling in menus view renders POST form)
         $logoutId = $this->upsertMenu('Logout', null, 'logout', 99, 'feathericon-log-out');
 
@@ -46,6 +48,7 @@ class MenuSeeder extends Seeder
                     'Manajemen Pemeliharaan',
                     'Manajemen Agenda',
                     'Percakapan',
+                    'Setting',
                     'Logout',
                 ])->pluck('id');
 

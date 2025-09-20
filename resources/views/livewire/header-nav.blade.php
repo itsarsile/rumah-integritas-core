@@ -1,6 +1,6 @@
-<div class="sticky top-0 navbar z-10 bg-base-100 border-b-2 border-base-200 {{ @request()->routeIs('login') ? 'hidden' : '' }}">
+<div class="sticky top-0 navbar z-10 border-b-1 bg-white {{ @request()->routeIs('login') ? 'hidden' : '' }}">
     <div class="navbar-start">
-        <a class="btn btn-ghost text-xl">{{ $title }}</a>
+        <h1 class="text-xl font-bold cursor-default select-none ml-4">{{ $title }}</h1>
     </div>
     <div class="navbar-center hidden lg:flex">
     </div>

@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use Barryvdh\Debugbar\Facades\Debugbar;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Computed;
@@ -304,6 +305,7 @@ class RoleManagement extends Component
         session()->flash('message', "{$count} role(s) deleted successfully.");
     }
 
+    #[Title('Manajemen Role')]
     public function render()
     {
         $roles = $this->getRoles();

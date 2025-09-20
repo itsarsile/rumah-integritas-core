@@ -8,7 +8,10 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+use Livewire\Attributes\Title;
+
 #[Layout('layouts.app')]
+#[Title('Log Activity')]
 class Logs extends Component
 {
     use WithPagination;
@@ -16,6 +19,7 @@ class Logs extends Component
     public $month = '';
     public $year = '';
     public $search = '';
+    public string $tz = 'Asia/Jakarta';
 
     public function updating($name, $value)
     {
@@ -47,13 +51,15 @@ class Logs extends Component
 
         $logs = $query->paginate(20);
 
-        // Group by date (Y-m-d)
-        $grouped = $logs->getCollection()->groupBy(fn($l) => $l->created_at->toDateString());
+        // Group by date in target timezone (Y-m-d)
+        $tz = $this->tz;
+        $grouped = $logs->getCollection()->groupBy(fn($l) => $l->created_at->clone()->timezone($tz)->toDateString());
 
         return view('livewire.logs', [
             'logs' => $logs,
             'grouped' => $grouped,
             'years' => $this->yearsOptions(),
+            'tz' => $tz,
         ]);
     }
 
@@ -67,4 +73,3 @@ class Logs extends Component
         return $years;
     }
 }
-

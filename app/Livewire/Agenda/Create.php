@@ -4,6 +4,7 @@ namespace App\Livewire\Agenda;
 
 use App\Models\AgendaReports;
 use App\Models\User;
+use App\Models\ActivityLog;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Title;
@@ -38,7 +39,7 @@ class Create extends Component
 
         $requestCode = 'AGENDA-' . now()->format('Ymd-His') . '-' . Str::random(5);
 
-        AgendaReports::create([
+        $report = AgendaReports::create([
             'title'        => $this->title,
             'request_code' => $requestCode,
             'date'         => $this->date,
@@ -48,6 +49,21 @@ class Create extends Component
             'status'       => 'pending',
             'created_by' => now(),
 
+        ]);
+
+        // Activity log for agenda submission
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'module' => 'agenda',
+            'action' => 'submitted',
+            'entity_type' => AgendaReports::class,
+            'entity_id' => $report->id,
+            'description' => 'Mengajukan agenda (' . $requestCode . ')',
+            'metadata' => [
+                'date' => $this->date,
+                'location' => $this->location,
+                'pic_id' => $this->person_in_charge_id,
+            ],
         ]);
 
         session()->flash('success', 'Agenda berhasil dibuat');

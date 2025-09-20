@@ -5,8 +5,10 @@ namespace App\Livewire\Audit;
 use App\Livewire\Components\DataTable;
 use App\Models\AuditReports;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Title;
 
 #[Layout('layouts.app')]
+#[Title('Sistem Audit & Pengawasan')]
 class Master extends DataTable
 {
     public function mount()
@@ -63,7 +65,17 @@ class Master extends DataTable
                 'key' => 'created_at',
                 'label' => 'Tanggal',
                 'type' => 'date_range'
-            ]
+            ],
+            [
+                'key' => 'status',
+                'label' => 'Status',
+                'type' => 'select',
+                'options' => [
+                    'pending' => 'Menunggu',
+                    'accepted' => 'Disetujui',
+                    'rejected' => 'Ditolak',
+                ]
+            ],
         ];
 
         // Set default sorting

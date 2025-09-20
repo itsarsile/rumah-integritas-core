@@ -1,5 +1,5 @@
 <!-- Single Root Container -->
-<div class="h-screen bg-base-200 flex flex-col">
+<div class="h-[calc(100vh-5rem)] bg-base-100 flex flex-col rounded-2xl shadow">
     <!-- Mobile Header with Menu Toggle (visible only on mobile) -->
     <div class="navbar bg-base-100 shadow-sm lg:hidden">
         <div class="navbar-start">
@@ -25,7 +25,7 @@
     <!-- Main Container -->
     <div class="flex flex-1 min-h-0">
         <!-- Desktop Sidebar - Always visible on large screens -->
-        <div class="hidden lg:flex lg:w-1/3 lg:min-w-96 bg-base-100 border-r border-base-300 shadow-sm flex-col">
+        <div class="hidden lg:flex lg:w-1/3 lg:min-w-96 bg-base-100 border-r border-base-300 flex-col rounded-l-2xl">
             <!-- Desktop Header -->
             <div class="p-4 border-b border-base-300 bg-base-200">
                 <h2 class="text-lg font-semibold">Audit Reports</h2>
@@ -46,21 +46,24 @@
                                     {{ $report['report_title'] }}
                                 </h3>
                                 @php
-                                    $badgeClass = match($report['status'] ?? 'pending') {
-                                        'completed' => 'badge-success',
-                                        'in_progress' => 'badge-info',
+                                    $status = $report['status'] ?? 'pending';
+                                    $badgeClass = match($status) {
+                                        'accepted', 'approved' => 'badge-success',
                                         'rejected' => 'badge-error',
                                         default => 'badge-warning'
                                     };
+                                    $statusText = match($status) {
+                                        'accepted', 'approved' => 'Disetujui',
+                                        'rejected' => 'Ditolak',
+                                        default => 'Menunggu',
+                                    };
                                 @endphp
-                                <div class="badge {{ $badgeClass }} badge-sm">
-                                    {{ ucfirst(str_replace('_', ' ', $report['status'] ?? 'pending')) }}
-                                </div>
+                                <div class="badge {{ $badgeClass }} badge-sm">{{ $statusText }}</div>
                             </div>
 
                             <!-- Date -->
                             <p class="text-xs text-base-content/60 mb-3">
-                                {{ \Carbon\Carbon::parse($report['created_at'])->format('M d, Y H:i') }}
+                                {{ \Carbon\Carbon::parse($report['created_at'])->timezone('Asia/Jakarta')->translatedFormat('d M Y, H:i') }}
                             </p>
 
                             <!-- Participants Info -->
@@ -96,7 +99,7 @@
         </div>
 
         <!-- Chat Interface -->
-        <div class="flex-1 flex flex-col min-w-0">
+        <div class="flex-1 flex flex-col min-w-0 bg-base-100 rounded-r-2xl">
             @if($currentAuditReport)
                 <!-- Desktop Chat Header -->
                 <div class="hidden lg:block bg-base-100 border-b border-base-300 shadow-sm">
@@ -134,14 +137,59 @@
                     </div>
                 </div>
 
+                <!-- Sticky Attachment Header for current audit -->
+                @if($currentAuditReport)
+                <div class="sticky top-0 z-20 bg-base-100 px-4 pt-4 shadow-sm border-b border-base-300">
+                    <div class="rounded-xl bg-base-100 p-4">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <div class="text-base font-semibold leading-tight">{{ $currentAuditReport->report_title }}</div>
+                                <div class="text-xs text-base-content/60 mt-1">
+                                    {{ optional($currentAuditReport->created_at)->timezone('Asia/Jakarta')->translatedFormat('d M Y, H:i') }}
+                                </div>
+                            </div>
+                            @php
+                                $status = $currentAuditReport->status ?? 'pending';
+                                $badge = ($status === 'accepted' || $status === 'approved') ? 'badge-success' : ($status === 'rejected' ? 'badge-error' : 'badge-warning');
+                                $text = ($status === 'accepted' || $status === 'approved') ? 'Disetujui' : ($status === 'rejected' ? 'Ditolak' : 'Menunggu');
+                            @endphp
+                            <div class="badge {{ $badge }} badge-sm">{{ $text }}</div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mt-3 text-sm">
+                            <div>
+                                <div class="text-base-content/60">Pengirim</div>
+                                <div class="font-medium">{{ $currentAuditReport->creator->name ?? '-' }}</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-base-content/60">Penerima</div>
+                                <div class="font-medium">{{ $currentAuditReport->regionalGovernmentOrganization->name ?? '-' }}</div>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            @if($currentAuditReport->hasLhpDocument())
+                                <a href="{{ $currentAuditReport->getFileUrl() }}" target="_blank" class="btn btn-sm w-full gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+                                    Lihat File Lampiran
+                                </a>
+                            @else
+                                <button class="btn btn-sm w-full" disabled>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+                                    Lampiran tidak tersedia
+                                </button>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                @endif
+
                 <!-- Messages Area -->
-                <div id="messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-base-200 scroll-smooth">
+                <div id="messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-base-100 scroll-smooth">
                     @forelse($messages as $msg)
                         <div class="flex {{ $msg['user_id'] == auth()->id() ? 'justify-end' : 'justify-start' }}">
                             <div class="max-w-[85%] sm:max-w-xs lg:max-w-md">
                                 <!-- Message Bubble -->
                                 <div class="chat {{ $msg['user_id'] == auth()->id() ? 'chat-end' : 'chat-start' }}">
-                                    <div class="chat-bubble {{ $msg['user_id'] == auth()->id() ? 'chat-bubble-primary' : 'chat-bubble-neutral' }}">
+                                    <div class="chat-bubble {{ $msg['user_id'] == auth()->id() ? 'chat-bubble-primary' : 'chat-bubble-neutral' }} rounded-2xl">
                                         <div class="flex flex-col gap-2">
                                             <!-- Text Content (if exists) -->
                                             @if($msg['content'])
@@ -175,7 +223,7 @@
                                         </div>
                                     </div>
                                     <div class="chat-footer opacity-50 text-xs mt-1">
-                                        {{ $msg['user']['name'] }} • {{ \Carbon\Carbon::parse($msg['created_at'])->format('H:i') }}
+                                        {{ $msg['user']['name'] }} • {{ \Carbon\Carbon::parse($msg['created_at'])->timezone('Asia/Jakarta')->format('H:i') }}
                                     </div>
                                 </div>
                             </div>
@@ -330,21 +378,24 @@
                                     {{ $report['report_title'] }}
                                 </h3>
                                 @php
-                                    $badgeClass = match($report['status'] ?? 'pending') {
-                                        'completed' => 'badge-success',
-                                        'in_progress' => 'badge-info',
+                                    $status = $report['status'] ?? 'pending';
+                                    $badgeClass = match($status) {
+                                        'accepted', 'approved' => 'badge-success',
                                         'rejected' => 'badge-error',
                                         default => 'badge-warning'
                                     };
+                                    $statusText = match($status) {
+                                        'accepted', 'approved' => 'Disetujui',
+                                        'rejected' => 'Ditolak',
+                                        default => 'Menunggu',
+                                    };
                                 @endphp
-                                <div class="badge {{ $badgeClass }} badge-sm">
-                                    {{ ucfirst(str_replace('_', ' ', $report['status'] ?? 'pending')) }}
-                                </div>
+                                <div class="badge {{ $badgeClass }} badge-sm">{{ $statusText }}</div>
                             </div>
 
                             <!-- Date -->
                             <p class="text-xs text-base-content/60 mb-3">
-                                {{ \Carbon\Carbon::parse($report['created_at'])->format('M d, Y H:i') }}
+                                {{ \Carbon\Carbon::parse($report['created_at'])->timezone('Asia/Jakarta')->translatedFormat('d M Y, H:i') }}
                             </p>
 
                             <!-- Participants Info -->

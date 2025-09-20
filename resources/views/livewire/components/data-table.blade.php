@@ -188,7 +188,7 @@
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                                                 @if($row->{$column['key']} === 'pending')
                                                     bg-yellow-100 text-yellow-800
-                                                @elseif($row->{$column['key']} === 'accepted')
+                                                @elseif($row->{$column['key']} === 'accepted' || $row->{$column['key']} === 'approved')
                                                     bg-green-100 text-green-800
                                                 @elseif($row->{$column['key']} === 'rejected')
                                                     bg-red-100 text-red-800
@@ -197,8 +197,8 @@
                                                 @endif">
                                                 @if($row->{$column['key']} === 'pending')
                                                     Menunggu
-                                                @elseif($row->{$column['key']} === 'accepted')
-                                                    Diterima
+                                                @elseif($row->{$column['key']} === 'accepted' || $row->{$column['key']} === 'approved')
+                                                    Disetujui
                                                 @elseif($row->{$column['key']} === 'rejected')
                                                     Ditolak
                                                 @else

@@ -29,20 +29,7 @@
                         </div>
                         <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
                         <!-- For avatar section -->
-                        <div class="flex items-center gap-4 p-4">
-                                <div class="avatar">
-                                        <div class="w-12 rounded-full">
-                                                <img
-                                                        src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
-                                        </div>
-                                </div>
-                                <div class="flex flex-col">
-                                        <span class="font-semibold">{{ Auth::user()->name }}</span>
-                                        <span
-                                                class="text-gray-600">{{ Auth::user()->hasRole('admin') ? 'Administrator' : (Auth::user()->hasRole('user') ? 'Pengaju' : '')}}</span>
-                                </div>
-
-                        </div>
+                        <livewire:sidebar-user />
                         <!-- For menu section -->
                         <livewire:menus />
                 </div>

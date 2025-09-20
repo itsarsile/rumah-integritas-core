@@ -5,10 +5,12 @@ namespace App\Livewire\Admin;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Layout('layouts.app')]
+#[Title('Tracking Permintaan')]
 class RequestTracking extends Component
 {
     use WithPagination;
@@ -115,4 +117,3 @@ class RequestTracking extends Component
         ]);
     }
 }
-

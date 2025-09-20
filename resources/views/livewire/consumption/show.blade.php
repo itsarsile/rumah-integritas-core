@@ -52,7 +52,9 @@
                                         : ($status == 'accepted'
                                             ? 'Diterima'
                                             : 'Tidak diketahui'));
-                            $statusClass = $status == 'pending' ? 'badge badge-warning' : 'badge badge-success';
+                            $statusClass =
+                                $status == 'pending' ? 'badge badge-warning'
+                                : ($status == 'rejected' ? 'badge badge-error' : 'badge badge-success');
                         @endphp
                         <span class="{{ $statusClass }}">{{ $statusText }}</span>
                     </td>

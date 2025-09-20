@@ -43,22 +43,28 @@
                 @forelse($grouped as $date => $items)
                     <div>
                         <div class="font-semibold mb-2 text-base-content/80">
-                            {{ \Illuminate\Support\Carbon::parse($date)->translatedFormat('l, d F Y') }}
+                            {{ \Illuminate\Support\Carbon::parse($date, $tz)->translatedFormat('l, d F Y') }}
                         </div>
                         <div class="space-y-3">
                             @foreach($items as $log)
                                 <div class="flex items-start gap-3">
-                                    <div class="avatar placeholder">
-                                        <div class="w-8 h-8 rounded-full bg-neutral/10 text-neutral-content">
-                                            <span class="text-xs">{{ strtoupper(substr($log->user->name ?? 'U',0,1)) }}</span>
-                                        </div>
+                                    <div class="avatar">
+                                        @if($log->user?->avatar_url)
+                                            <div class="w-8 h-8 rounded-full ring ring-primary ring-offset-base-100 ring-offset-1 overflow-hidden">
+                                                <img src="{{ $log->user->avatar_url }}" alt="avatar" />
+                                            </div>
+                                        @else
+                                            <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-semibold">
+                                                {{ $log->user?->initials ?? 'U' }}
+                                            </div>
+                                        @endif
                                     </div>
                                     <div class="flex-1 p-3 rounded-box bg-base-200">
                                         <div class="flex items-center gap-2">
                                             <span class="font-semibold">{{ $log->user->name ?? 'Unknown' }}</span>
                                             <span class="badge badge-ghost badge-sm">{{ ucfirst($log->module) }}</span>
                                             <span class="badge {{ in_array($log->action,['approved','accepted']) ? 'badge-success' : ($log->action=='rejected' ? 'badge-error' : 'badge-info') }} badge-sm">{{ ucfirst($log->action) }}</span>
-                                            <span class="ml-auto text-xs opacity-60">{{ $log->created_at->format('H:i') }}</span>
+                                            <span class="ml-auto text-xs opacity-60">{{ $log->created_at->timezone($tz)->format('H:i') }}</span>
                                         </div>
                                         <div class="text-sm mt-1">{{ $log->description }}</div>
                                     </div>
@@ -77,4 +83,3 @@
         </div>
     </div>
 </div>
-

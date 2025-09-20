@@ -17,9 +17,11 @@ class AdminMenuSeeder extends Seeder
         $userMgmtId = $this->upsertMenu('Manajemen Pengguna', null, null, 7, 'feathericon-user');
         $this->upsertMenu('User', $userMgmtId, 'dashboard.user-management', 1);
         $this->upsertMenu('Role', $userMgmtId, 'dashboard.role-management', 2);
+        $this->upsertMenu('RBAC', $userMgmtId, 'dashboard.access-control', 3);
         $logoutId = $this->upsertMenu('Logout', null, 'logout', 99, 'feathericon-log-out');
+        $settingsId = $this->upsertMenu('Setting', null, 'dashboard.settings', 90, 'feathericon-settings');
 
-        foreach ([$trackingId, $approvalId, $userMgmtId, $logoutId] as $menuId) {
+        foreach ([$trackingId, $approvalId, $userMgmtId, $settingsId, $logoutId] as $menuId) {
             $this->attachRole($menuId, $adminRoleId);
         }
         // Attach children to admin

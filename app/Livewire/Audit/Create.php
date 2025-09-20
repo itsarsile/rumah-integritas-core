@@ -5,11 +5,14 @@ namespace App\Livewire\Audit;
 use App\Models\AuditReports;
 use App\Models\RegionalGovernmentOrganization;
 use Livewire\Attributes\Layout;
+use App\Models\ActivityLog;
+use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
 #[Layout('layouts.app')]
+#[Title('Buat Laporan Audit')]
 class Create extends Component
 {
     use WithFileUploads;
@@ -78,7 +81,22 @@ class Create extends Component
                 }
             }
 
-            AuditReports::create($auditData);
+            $report = AuditReports::create($auditData);
+
+            // Activity log for audit submission
+            ActivityLog::create([
+                'user_id' => auth()->id(),
+                'module' => 'audit',
+                'action' => 'submitted',
+                'entity_type' => AuditReports::class,
+                'entity_id' => $report->id,
+                'description' => 'Mengajukan laporan audit (' . $reportCode . ')',
+                'metadata' => [
+                    'lhp_number' => $this->lhpNumber,
+                    'opd_id' => $this->selectedOpd,
+                    'findings' => (int) $this->findings,
+                ],
+            ]);
 
             session()->flash('message', 'Audit report created successfully with code: ' . $reportCode);
 

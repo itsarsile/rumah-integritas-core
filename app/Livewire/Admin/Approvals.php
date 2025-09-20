@@ -9,9 +9,11 @@ use App\Models\MaintenanceReports;
 use App\Models\ActivityLog;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
 #[Layout('layouts.app')]
+#[Title('Manajemen Persetujuan')]
 class Approvals extends Component
 {
     public $tab = 'all';

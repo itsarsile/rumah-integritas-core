@@ -12,7 +12,7 @@
                     </div>
                     <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
                         <li><a wire:click="$set('status','')">Semua Status</a></li>
-                        <li><a wire:click="$set('status','pending')">Pending</a></li>
+                        <li><a wire:click="$set('status','pending')">Menunggu</a></li>
                         <li><a wire:click="$set('status','approved')">Disetujui</a></li>
                         <li><a wire:click="$set('status','rejected')">Ditolak</a></li>
                     </ul>
@@ -86,4 +86,3 @@
         </div>
     </div>
 </div>
-
