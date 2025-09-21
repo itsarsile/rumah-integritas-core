@@ -23,19 +23,23 @@ COPY . .
 # Build assets if Vite config exists; tolerate missing front-end
 RUN mkdir -p public/build && if [ -f ./vite.config.js ]; then npm run build; fi
 
-# 3) PHP runtime base with required extensions
-FROM php:8.3-fpm-alpine AS runtime-base
+# 3) PHP runtime base with required extensions (Debian for reliable builds)
+FROM php:8.3-fpm-bookworm AS runtime-base
 WORKDIR /var/www/html
 
 # Install system deps and PHP extensions commonly required by Laravel + Reverb
 RUN set -eux; \
-    apk add --no-cache \
-      bash git curl icu-dev libzip-dev zlib-dev oniguruma-dev \
-      libpng-dev libjpeg-turbo-dev freetype-dev libwebp-dev \
-      postgresql-dev \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+      bash git curl unzip ca-certificates \
+      libicu-dev libzip-dev zlib1g-dev \
+      libpng-dev libjpeg62-turbo-dev libfreetype6-dev libwebp-dev \
+      libpq-dev \
     ; \
-    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS; \
-    docker-php-ext-configure gd --with-freetype --with-jpeg; \
+    rm -rf /var/lib/apt/lists/*; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends $PHPIZE_DEPS; \
+    docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp; \
     docker-php-ext-install -j$(nproc) \
       bcmath \
       gd \
@@ -50,7 +54,8 @@ RUN set -eux; \
       zip; \
     pecl install redis; \
     docker-php-ext-enable redis; \
-    apk del .build-deps
+    apt-get purge -y --auto-remove $PHPIZE_DEPS; \
+    rm -rf /var/lib/apt/lists/*
 
 # Configure PHP for production (opcache)
 COPY --chown=www-data:www-data . .
