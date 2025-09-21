@@ -34,11 +34,13 @@ RUN set -eux; \
       bash git curl icu-dev libzip-dev oniguruma-dev libpng-dev libjpeg-turbo-dev freetype-dev \
       postgresql-dev \
     ; \
+    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS; \
     docker-php-ext-configure gd --with-freetype --with-jpeg; \
     docker-php-ext-install -j$(nproc) \
       bcmath \
       gd \
       intl \
+      mbstring \
       opcache \
       pcntl \
       pdo \
@@ -46,7 +48,6 @@ RUN set -eux; \
       pdo_pgsql \
       sockets \
       zip; \
-    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS; \
     pecl install redis; \
     docker-php-ext-enable redis; \
     apk del .build-deps
