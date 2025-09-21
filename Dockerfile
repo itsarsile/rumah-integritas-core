@@ -29,33 +29,22 @@ WORKDIR /var/www/html
 
 # Install system deps and PHP extensions commonly required by Laravel + Reverb
 RUN set -eux; \
+    export DEBIAN_FRONTEND=noninteractive; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
       bash git curl unzip ca-certificates \
       libicu-dev libzip-dev zlib1g-dev \
       libpng-dev libjpeg62-turbo-dev libfreetype6-dev libwebp-dev \
       libpq-dev \
+      $PHPIZE_DEPS \
     ; \
-    rm -rf /var/lib/apt/lists/*; \
-    apt-get update; \
-    apt-get install -y --no-install-recommends $PHPIZE_DEPS; \
     docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp; \
-    docker-php-ext-install -j$(nproc) \
-      bcmath \
-      gd \
-      intl \
-      mbstring \
-      opcache \
-      pcntl \
-      pdo \
-      pdo_mysql \
-      pdo_pgsql \
-      sockets \
-      zip; \
-    pecl install redis; \
+    docker-php-ext-install -j"$(nproc)" \
+      bcmath gd intl mbstring opcache pcntl pdo pdo_mysql pdo_pgsql sockets zip; \
+    yes '' | pecl install -o -f redis; \
     docker-php-ext-enable redis; \
     apt-get purge -y --auto-remove $PHPIZE_DEPS; \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* /tmp/pear
 
 # Configure PHP for production (opcache)
 COPY --chown=www-data:www-data . .
