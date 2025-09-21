@@ -18,8 +18,14 @@
                 <td class="flex items-center gap-2">
                     <div class="avatar">
                         @if ($audit_report->user_avatar)
+                            @php
+                                $src = $audit_report->user_avatar;
+                                if (!\Illuminate\Support\Str::startsWith($src, ['http://', 'https://'])) {
+                                    $src = \Illuminate\Support\Facades\Storage::url($src);
+                                }
+                            @endphp
                             <div class="w-6 h-6 rounded-full ring ring-primary ring-offset-base-100 ring-offset-1 overflow-hidden">
-                                <img src="{{ $audit_report->user_avatar }}" alt="Avatar of {{ $audit_report->user_name }}" />
+                                <img src="{{ $src }}" alt="Avatar of {{ $audit_report->user_name }}" />
                             </div>
                         @else
                             <div class="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-semibold">
