@@ -12,8 +12,7 @@ RUN composer install \
     --no-progress \
     --no-interaction \
     --no-scripts \
-    --optimize-autoloader \
-    --classmap-authoritative
+    --optimize-autoloader
 
 # 2) Node build (Vite)
 FROM node:20-alpine AS frontend_build
@@ -31,7 +30,8 @@ WORKDIR /var/www/html
 # Install system deps and PHP extensions commonly required by Laravel + Reverb
 RUN set -eux; \
     apk add --no-cache \
-      bash git curl icu-dev libzip-dev oniguruma-dev libpng-dev libjpeg-turbo-dev freetype-dev \
+      bash git curl icu-dev libzip-dev zlib-dev oniguruma-dev \
+      libpng-dev libjpeg-turbo-dev freetype-dev libwebp-dev \
       postgresql-dev \
     ; \
     apk add --no-cache --virtual .build-deps $PHPIZE_DEPS; \
