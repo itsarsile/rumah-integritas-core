@@ -53,6 +53,8 @@ COPY --from=vendor /app/vendor ./vendor
 # Make Composer available in final image (needed for dump-autoload)
 COPY --from=vendor /usr/bin/composer /usr/bin/composer
 
+COPY --from=frontend /app/public/build ./public/build
+
 # Fix permissions for Laravel storage & cache
 RUN chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
