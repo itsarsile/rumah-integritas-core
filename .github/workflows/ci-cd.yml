@@ -85,7 +85,7 @@ jobs:
         run: php artisan migrate --force
 
   docker:
-    name: Build and Push Images
+    name: Build and Push Image
     needs: tests
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
@@ -114,32 +114,16 @@ jobs:
         id: meta
         run: |
           IMAGE_BASE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          echo "app_latest=${IMAGE_BASE}:app-fpm-latest" >> $GITHUB_OUTPUT
-          echo "app_sha=${IMAGE_BASE}:app-fpm-${GITHUB_SHA}" >> $GITHUB_OUTPUT
-          echo "reverb_latest=${IMAGE_BASE}:reverb-latest" >> $GITHUB_OUTPUT
-          echo "reverb_sha=${IMAGE_BASE}:reverb-${GITHUB_SHA}" >> $GITHUB_OUTPUT
+          echo "image_latest=${IMAGE_BASE}:latest" >> $GITHUB_OUTPUT
+          echo "image_sha=${IMAGE_BASE}:${GITHUB_SHA}" >> $GITHUB_OUTPUT
 
-      - name: Build+Push app-fpm
+      - name: Build+Push App Image
         uses: docker/build-push-action@v5
         with:
           context: .
-          target: app-fpm
           push: true
           tags: |
-            ${{ steps.meta.outputs.app_latest }}
-            ${{ steps.meta.outputs.app_sha }}
+            ${{ steps.meta.outputs.image_latest }}
+            ${{ steps.meta.outputs.image_sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - name: Build+Push reverb
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          target: app-reverb
-          push: true
-          tags: |
-            ${{ steps.meta.outputs.reverb_latest }}
-            ${{ steps.meta.outputs.reverb_sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
