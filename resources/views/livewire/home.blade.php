@@ -1,7 +1,7 @@
-<div class="space-y-4 border rounded-md p-4 bg-white">
+<div class="space-y-4 border border-base-content/20 rounded-md p-4 bg-white">
     {{-- The whole world belongs to you. --}}
     <div class="grid lg:grid-cols-3 gap-6">
-        <div class="card card-border text-primary-content rounded-md">
+        <div class="card card-border rounded-md">
             <div class="card-body">
                 <h2 class="card-title font-normal">
                     <x-feathericon-file />

@@ -20,7 +20,7 @@
                         </div>
                 </div>
                 @auth
-                <div class="drawer-side border-r bg-white">
+                <div class="drawer-side border-r bg-white border-base-content/20">
                         <div class="flex items-center gap-4 p-4">
                                 <x-app.logo class="w-10" />
                                 <h1 class="mt-2">
