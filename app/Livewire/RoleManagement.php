@@ -2,6 +2,8 @@
 
 namespace App\Livewire;
 
+use App\Support\MenuTreeBuilder;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -32,12 +34,16 @@ class RoleManagement extends Component
     public $showEditModal = false;
     public $showDeleteModal = false;
     public $roleToDelete = null;
+    public $showMenuConfigModal = false;
+    public $menuConfigRoleId = null;
 
     // Form data
     public $name = '';
     public $guard_name = 'web';
     public $permissions = [];
     public $editingRoleId = null;
+    public $roleMenuSelections = [];
+    public $menuTree = [];
 
 
     protected $paginationTheme = 'bootstrap';
@@ -71,7 +77,7 @@ class RoleManagement extends Component
 
     public function mount()
     {
-        // Initialize component
+        $this->menuTree = MenuTreeBuilder::activeTree();
     }
 
     public function updatedSearch()
@@ -194,6 +200,62 @@ class RoleManagement extends Component
         $this->permissions = [];
         $this->editingRoleId = null;
         $this->resetValidation();
+    }
+
+    public function openMenuConfigModal(int $roleId)
+    {
+        $role = Role::findOrFail($roleId);
+        $this->menuConfigRoleId = $role->id;
+        $this->roleMenuSelections = DB::table('menu_roles')
+            ->where('role_id', $role->id)
+            ->pluck('menu_id')
+            ->map(fn($id) => (string) $id)
+            ->toArray();
+        $this->showMenuConfigModal = true;
+    }
+
+    public function closeMenuConfigModal()
+    {
+        $this->showMenuConfigModal = false;
+        $this->menuConfigRoleId = null;
+        $this->roleMenuSelections = [];
+    }
+
+    public function saveRoleMenus()
+    {
+        if (!$this->menuConfigRoleId) {
+            return;
+        }
+
+        $roleId = $this->menuConfigRoleId;
+
+        $menuIds = collect($this->roleMenuSelections)
+            ->filter()
+            ->map(fn($id) => (int) $id)
+            ->unique()
+            ->values();
+
+        DB::transaction(function () use ($roleId, $menuIds) {
+            DB::table('menu_roles')->where('role_id', $roleId)->delete();
+
+            if ($menuIds->isEmpty()) {
+                return;
+            }
+
+            $timestamp = now();
+            $rows = $menuIds->map(fn($menuId) => [
+                'menu_id' => $menuId,
+                'role_id' => $roleId,
+                'created_at' => $timestamp,
+                'updated_at' => $timestamp,
+            ])->toArray();
+
+            DB::table('menu_roles')->insert($rows);
+        });
+
+        $this->closeMenuConfigModal();
+        session()->flash('message', 'Menu configuration updated successfully.');
+        $this->dispatch('role-menu-updated');
     }
 
     // CRUD Operations

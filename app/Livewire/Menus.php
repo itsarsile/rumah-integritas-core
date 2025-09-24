@@ -2,7 +2,7 @@
 
 namespace App\Livewire;
 
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Livewire\Component;
@@ -11,37 +11,79 @@ class Menus extends Component
 {
     public $menus;
 
-    public function mount()
+    public function mount(): void
     {
-        $roleIds = auth()->user()->roles->pluck('id');
+        $user = auth()->user();
+
+        if (!$user) {
+            $this->menus = ['root' => collect(), 'children' => collect()];
+            return;
+        }
+
+        $roleIds = $user->roles->pluck('id');
+
+        $accessibleMenuIds = $this->collectAccessibleMenuIds($user->id, $roleIds);
+
+        if ($accessibleMenuIds->isEmpty()) {
+            $this->menus = ['root' => collect(), 'children' => collect()];
+            return;
+        }
+
+        $menuIdsWithAncestors = $this->includeAncestorMenus($accessibleMenuIds);
+
         $menus = DB::table('menus')
+            ->whereIn('menus.id', $menuIdsWithAncestors)
             ->where('menus.is_active', true)
-            ->where(function ($q) use ($roleIds) {
-                $q->whereIn('menus.id', function ($sub) use ($roleIds) {
-                    $sub->select('menu_id')
-                        ->from('menu_roles')
-                        ->whereIn('role_id', $roleIds);
-                })
-                    ->orWhereIn('menus.id', function ($sub) use ($roleIds) {
-                        // fetch parents of menus that the role has
-                        $sub->select('parent_id')
-                            ->from('menus')
-                            ->join('menu_roles', 'menus.id', '=', 'menu_roles.menu_id')
-                            ->whereIn('menu_roles.role_id', $roleIds)
-                            ->whereNotNull('parent_id');
-                    });
-            })
             ->orderBy('menus.order')
+            ->orderBy('menus.name')
             ->get()
             ->filter(fn($menu) => !$menu->route || Route::has($menu->route));
-            
+
         $grouped = $menus->groupBy('parent_id');
 
-        // Organize into root and children
         $this->menus = [
-            'root' => $grouped->get(null, collect()), // root menus (no parent)
-            'children' => $grouped->except(null),         // child menus
+            'root' => $grouped->get(null, collect()),
+            'children' => $grouped->except(null),
         ];
+    }
+
+    private function collectAccessibleMenuIds(int $userId, Collection $roleIds): Collection
+    {
+        $roleMenuIds = $roleIds->isNotEmpty()
+            ? DB::table('menu_roles')->whereIn('role_id', $roleIds)->pluck('menu_id')
+            : collect();
+
+        $userMenuIds = DB::table('menu_user')
+            ->where('user_id', $userId)
+            ->pluck('menu_id');
+
+        return $roleMenuIds->merge($userMenuIds)->unique()->values();
+    }
+
+    private function includeAncestorMenus(Collection $menuIds): Collection
+    {
+        $allIds = $menuIds->values();
+        $cursor = $menuIds->values();
+
+        while ($cursor->isNotEmpty()) {
+            $parentIds = DB::table('menus')
+                ->whereIn('id', $cursor)
+                ->pluck('parent_id')
+                ->filter();
+
+            $newParents = $parentIds
+                ->filter(fn($parentId) => !$allIds->contains($parentId))
+                ->values();
+
+            if ($newParents->isEmpty()) {
+                break;
+            }
+
+            $allIds = $allIds->merge($newParents)->unique()->values();
+            $cursor = $newParents;
+        }
+
+        return $allIds;
     }
 
     public function render()

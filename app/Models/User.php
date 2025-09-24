@@ -157,4 +157,12 @@ class User extends Authenticatable
     {
         $this->update(['last_login_at' => now()]);
     }
+
+    /**
+     * Menus assigned directly to the user.
+     */
+    public function menus()
+    {
+        return $this->belongsToMany(Menu::class, 'menu_user')->withTimestamps();
+    }
 }

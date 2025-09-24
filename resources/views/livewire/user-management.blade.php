@@ -264,6 +264,10 @@
                                                 </svg>
                                                 View Details
                                             </a></li>
+                                            <li><a wire:click="openMenuConfigModal({{ $user->id }})">
+                                                <x-feathericon-menu class="w-4 h-4" />
+                                                Configure Menu
+                                            </a></li>
                                             <li><a wire:click="editUser({{ $user->id }})">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
@@ -672,6 +676,42 @@
 
         <!-- Backdrop -->
         <div class="modal-backdrop bg-black/50 backdrop-blur-sm"></div>
+    </div>
+
+    {{-- Menu Configuration Modal --}}
+    <div class="modal" x-data="{ open: @entangle('showMenuConfigModal') }" :class="{ 'modal-open': open }" x-cloak>
+        <div class="modal-box max-w-3xl bg-base-100 shadow-2xl border border-base-300 rounded-3xl">
+            <div class="flex items-center justify-between p-6 bg-gradient-to-r from-primary/10 to-secondary/10 -m-6 mb-6 rounded-t-3xl border-b border-base-200">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center">
+                        <x-feathericon-menu class="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-base-content">Configure User Menu</h3>
+                        <p class="text-sm text-base-content/70">Pilih menu yang boleh diakses oleh pengguna ini</p>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-sm btn-circle btn-ghost hover:bg-base-200" wire:click="closeMenuConfigModal">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <p class="text-sm text-base-content/70">Pengaturan ini akan menambah akses menu di luar yang diberikan oleh peran.</p>
+                <div class="max-h-80 overflow-y-auto pr-2">
+                    <x-menu-selector :menus="$menuTree" field="userMenuSelections" />
+                </div>
+            </div>
+
+            <div class="modal-action mt-6">
+                <button type="button" class="btn btn-ghost" wire:click="closeMenuConfigModal">Batal</button>
+                <button type="button" class="btn btn-primary" wire:click="saveUserMenus">Simpan</button>
+            </div>
+        </div>
+
+        <label class="modal-backdrop bg-black/50 backdrop-blur-sm" wire:click="closeMenuConfigModal">Close</label>
     </div>
 
 

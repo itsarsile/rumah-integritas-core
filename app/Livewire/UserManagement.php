@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\User;
+use App\Support\MenuTreeBuilder;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -33,6 +34,8 @@ class UserManagement extends Component
     public $showEditModal = false;
     public $showDeleteModal = false;
     public $userToDelete = null;
+    public $showMenuConfigModal = false;
+    public $menuConfigUserId = null;
 
     // Form data
     public $name = '';
@@ -43,6 +46,8 @@ class UserManagement extends Component
     public $status = 'active';
     public $editingUserId = null;
     public $selectedRoleId = null;
+    public $userMenuSelections = [];
+    public $menuTree = [];
 
     protected $paginationTheme = 'bootstrap';
 
@@ -85,6 +90,7 @@ class UserManagement extends Component
     {
         // Initialize component
         $this->roles = Role::where('guard_name', 'web')->get();
+        $this->menuTree = MenuTreeBuilder::activeTree();
     }
 
     public function updatedSearch()
@@ -231,6 +237,13 @@ class UserManagement extends Component
         $this->resetForm();
     }
 
+    public function closeMenuConfigModal()
+    {
+        $this->showMenuConfigModal = false;
+        $this->menuConfigUserId = null;
+        $this->userMenuSelections = [];
+    }
+
     public function resetForm()
     {
         $this->name = '';
@@ -241,6 +254,36 @@ class UserManagement extends Component
         $this->status = 'active';
         $this->editingUserId = null;
         $this->resetValidation();
+    }
+
+    public function openMenuConfigModal(int $userId)
+    {
+        $user = User::with('menus')->findOrFail($userId);
+        $this->menuConfigUserId = $user->id;
+        $this->userMenuSelections = $user->menus->pluck('id')->map(fn($id) => (string) $id)->toArray();
+        $this->showMenuConfigModal = true;
+    }
+
+    public function saveUserMenus()
+    {
+        if (!$this->menuConfigUserId) {
+            return;
+        }
+
+        $user = User::findOrFail($this->menuConfigUserId);
+        $menuIds = collect($this->userMenuSelections)
+            ->filter()
+            ->map(fn($id) => (int) $id)
+            ->unique()
+            ->values()
+            ->toArray();
+
+        $user->menus()->sync($menuIds);
+
+        $this->closeMenuConfigModal();
+
+        session()->flash('message', 'Menu configuration updated successfully.');
+        $this->dispatch('user-menu-updated');
     }
 
     // CRUD Operations
