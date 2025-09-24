@@ -7,7 +7,7 @@
                     <x-feathericon-file />
                     Total Permintaan
                 </h2>
-                <p class="text-3xl font-bold">12</p>
+                <p class="text-3xl font-bold">{{ $stats['total'] ?? 0 }}</p>
 
             </div>
         </div>
@@ -17,7 +17,7 @@
                     <x-feathericon-alert-circle class="w-6 h-6" />
                     Menunggu Review
                 </h2>
-                <p class="text-3xl font-bold">5</p>
+                <p class="text-3xl font-bold">{{ $stats['pending'] ?? 0 }}</p>
 
             </div>
         </div>
@@ -27,7 +27,7 @@
                     <x-feathericon-check-circle />
                     Disetujui
                 </h2>
-                <p class="text-3xl font-bold">2</p>
+                <p class="text-3xl font-bold">{{ $stats['approved'] ?? 0 }}</p>
 
             </div>
         </div>

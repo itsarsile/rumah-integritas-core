@@ -8,6 +8,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Spatie\Permission\Models\Role;
 
 class LoginForm extends Component
 {
@@ -17,6 +18,9 @@ class LoginForm extends Component
 
     #[Validate('required')]
     public $password = '';
+
+    #[Validate('required|exists:roles,name')]
+    public $selectedRole = '';
 
     public function login()
     {
@@ -28,6 +32,23 @@ class LoginForm extends Component
         ];
 
         if (Auth::attempt($credentials)) {
+            // Verify selected role matches user's assigned role(s)
+            $user = Auth::user();
+
+            $matchesSpatieRole = method_exists($user, 'hasRole') ? $user->hasRole($this->selectedRole) : false;
+            $matchesUserColumn = isset($user->role) && $user->role === $this->selectedRole;
+
+            if (!($matchesSpatieRole || $matchesUserColumn)) {
+                Auth::logout();
+                session()->invalidate();
+                session()->regenerateToken();
+                session()->flash('error', 'Role tidak sesuai. Silakan pilih peran yang benar.');
+                return null; // stay on login
+            }
+
+            // Optional: store active role in session
+            session(['active_role' => $this->selectedRole]);
+
             session()->flash('message', 'Successfully logged in');
             return $this->redirect('/dashboard');
         }
@@ -44,6 +65,9 @@ class LoginForm extends Component
     #[Title('Login')]
     public function render()
     {
-        return view('livewire.login-form');
+        $roles = Role::orderBy('name')->pluck('name');
+        return view('livewire.login-form', [
+            'roles' => $roles,
+        ]);
     }
 }

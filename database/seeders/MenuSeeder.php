@@ -37,36 +37,36 @@ class MenuSeeder extends Seeder
         $logoutId = $this->upsertMenu('Logout', null, 'logout', 99, 'feathericon-log-out');
 
         // Assign these menus to 'user' role
-        $userRoleId = DB::table('roles')->where('name', 'user')->value('id');
-        if ($userRoleId) {
-            $menuIds = DB::table('menus')
-                ->whereIn('name', [
-                    'Dashboard',
-                    'Sistem Audit & Pengawasan',
-                    'Sistem Administrasi Operasional',
-                    'Manajemen Konsumsi',
-                    'Manajemen Pemeliharaan',
-                    'Manajemen Agenda',
-                    'Percakapan',
-                    'Setting',
-                    'Logout',
-                ])->pluck('id');
+        // $userRoleId = DB::table('roles')->where('name', 'user')->value('id');
+        // if ($userRoleId) {
+        //     $menuIds = DB::table('menus')
+        //         ->whereIn('name', [
+        //             'Dashboard',
+        //             'Sistem Audit & Pengawasan',
+        //             'Sistem Administrasi Operasional',
+        //             'Manajemen Konsumsi',
+        //             'Manajemen Pemeliharaan',
+        //             'Manajemen Agenda',
+        //             'Percakapan',
+        //             'Setting',
+        //             'Logout',
+        //         ])->pluck('id');
 
-            foreach ($menuIds as $menuId) {
-                $exists = DB::table('menu_roles')
-                    ->where('menu_id', $menuId)
-                    ->where('role_id', $userRoleId)
-                    ->exists();
-                if (!$exists) {
-                    DB::table('menu_roles')->insert([
-                        'menu_id' => $menuId,
-                        'role_id' => $userRoleId,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
-                }
-            }
-        }
+        //     foreach ($menuIds as $menuId) {
+        //         $exists = DB::table('menu_roles')
+        //             ->where('menu_id', $menuId)
+        //             ->where('role_id', $userRoleId)
+        //             ->exists();
+        //         if (!$exists) {
+        //             DB::table('menu_roles')->insert([
+        //                 'menu_id' => $menuId,
+        //                 'role_id' => $userRoleId,
+        //                 'created_at' => now(),
+        //                 'updated_at' => now(),
+        //             ]);
+        //         }
+        //     }
+        // }
     }
 
     private function upsertMenu(string $name, ?int $parentId, ?string $route, int $order, ?string $icon = null): int

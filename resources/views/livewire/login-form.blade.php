@@ -35,8 +35,17 @@
             <legend class="fieldset-legend">Kata Sandi</legend>
             <input type="password" class="input w-full" placeholder="Type here" wire:model="password" />
         </fieldset>
+        <fieldset class="fieldset">
+            <legend class="fieldset-legend">Peran</legend>
+            <select class="select w-full" wire:model="selectedRole">
+                <option value="">Pilih Peran</option>
+                @foreach($roles as $role)
+                    <option value="{{ $role }}">{{ ucfirst($role) }}</option>
+                @endforeach
+            </select>
+        </fieldset>
         <div class="flex justify-between">
-            <label class="label">
+            <label class="label text-sm">
                 <input type="checkbox" checked="checked" class="checkbox" />
                 Remember me
             </label>
@@ -44,6 +53,6 @@
                 Lupa Kata Sandi
             </a>
         </div>
-        <button type="submit" class="btn w-full">Masuk</button>
+        <button type="submit" class="btn btn-primary w-full">Masuk</button>
     </form>
 </div>

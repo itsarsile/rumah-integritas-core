@@ -58,10 +58,6 @@
     @else
         <div class="rounded-xl overflow-hidden shadow-xl">
             <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80" class="w-full object-cover" alt="Placeholder slide">
-            <div class="bg-base-100 p-6 text-base-content/70">
-                <h3 class="text-xl font-semibold text-base-content">Personalisasi Slider Login</h3>
-                <p class="mt-2">Tambahkan slide baru melalui dashboard admin untuk menampilkan informasi atau visual sesuai kebutuhan organisasi Anda.</p>
-            </div>
         </div>
     @endif
 </div>

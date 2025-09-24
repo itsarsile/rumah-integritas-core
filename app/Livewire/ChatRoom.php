@@ -6,7 +6,6 @@ use App\Models\AuditReports;
 use App\Models\ChatMessage;
 use App\Models\ChatRoom as ChatRoomModel;
 use App\Models\ChatRoomParticipant;
-use Barryvdh\Debugbar\Facades\Debugbar;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -82,7 +81,6 @@ class ChatRoom extends Component
             ->get()
             ->toArray();
 
-        Debugbar::info($this->messages);
 
         ChatRoomParticipant::where('chat_room_id', $this->chatRoomId)
             ->where('user_id', auth()->id())
