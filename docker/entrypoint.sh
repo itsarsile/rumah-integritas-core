@@ -1,31 +1,44 @@
-#!/usr/bin/env sh
+#!/bin/bash
 set -e
 
-# Simple, idempotent runtime setup for Laravel in containers
-
-echo "[entrypoint] Running Laravel runtime setup..."
-
-# Ensure the APP_KEY exists; do not auto-generate in prod
-if [ -z "$APP_KEY" ]; then
-  echo "[entrypoint] Warning: APP_KEY is not set. Some Artisan caches may fail." >&2
+# Run Laravel optimizations
+if [ "$APP_ENV" = "production" ]; then
+    echo "Running production optimizations..."
+    php artisan config:cache || true
+    php artisan route:cache || true
+    php artisan view:cache || true
+    php artisan event:cache || true
 fi
 
-# Storage symlink (safe to re-run)
+# Create storage link if it doesn't exist
 if [ ! -L public/storage ]; then
-  php artisan storage:link || true
+    php artisan storage:link || true
 fi
 
-# Cache warmups (do not fail hard to ease first boot)
-php artisan config:clear || true
-php artisan cache:clear || true
-php artisan view:clear || true
-php artisan route:clear || true
+# Optionally run migrations and seeds at startup
+if [ "${AUTO_MIGRATE:-0}" = "1" ]; then
+    echo "Running database migrations..."
+    ATTEMPTS=10
+    until php artisan migrate --force --no-interaction; do
+        ATTEMPTS=$((ATTEMPTS-1))
+        if [ $ATTEMPTS -le 0 ]; then
+            echo "Migrations failed after retries; continuing startup."
+            break
+        fi
+        echo "Migration failed; retrying in 3s... ($ATTEMPTS left)"
+        sleep 3
+    done
 
-php artisan config:cache || true
-php artisan route:cache || true
-php artisan view:cache || true
-php artisan event:cache || true
+    if [ "${AUTO_SEED:-0}" = "1" ]; then
+        if [ -n "${SEED_CLASS:-}" ]; then
+            echo "Seeding database with class ${SEED_CLASS}..."
+            php artisan db:seed --class="${SEED_CLASS}" --force || true
+        else
+            echo "Seeding database (DatabaseSeeder)..."
+            php artisan db:seed --force || true
+        fi
+    fi
+fi
 
-echo "[entrypoint] Setup complete. Starting: $*"
+# Execute the main command
 exec "$@"
-

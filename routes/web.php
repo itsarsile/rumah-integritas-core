@@ -15,6 +15,7 @@ use App\Livewire\Admin\Approvals as AdminApprovals;
 use App\Livewire\Admin\RequestTracking as AdminRequestTracking;
 use App\Livewire\Account\Settings as AccountSettings;
 use App\Livewire\Admin\AccessControl as AdminAccessControl;
+use App\Livewire\Admin\LoginSliderManagement;
 use App\Models\AuditReports;
 use App\Models\ChatMessage;
 use Illuminate\Support\Facades\Route;
@@ -24,7 +25,9 @@ Route::get('/', function () {
     return view('login');
 })->middleware('auth')->name('home');
 
-Route::get('/login', LoginForm::class)->middleware('guest')->name('login');
+Route::get('/login', function() {
+    return view('login');
+})->middleware('guest')->name('login');
 
 Route::get('/', function () {
     return redirect()->intended('dashboard');
@@ -73,6 +76,9 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     // Admin-only RBAC management per module
     Route::get('/access-control', AdminAccessControl::class)
         ->name('dashboard.access-control');
+
+    Route::get('/appearance/login-slider', LoginSliderManagement::class)
+        ->name('dashboard.login-slider');
 
     Route::prefix('audit')->group(function () {
         Route::get("/", AuditMaster::class)->name('dashboard.audit.master');

@@ -1,0 +1,36 @@
+version: "1.0"
+
+services:
+  laravel-reverb:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      DB_HOST: pgsql
+      DB_PORT: 5432
+      DB_DATABASE: laravel
+      DB_USERNAME: laravel
+      DB_PASSWORD: secret
+      SESSION_DRIVER: file
+      CACHE_STORE: file
+      AUTO_MIGRATE: "1"
+      AUTO_SEED: "1"
+    depends_on:
+      - pgsql
+
+  pgsql:   # <-- service name = hostname inside Docker network
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: laravel
+      POSTGRES_USER: laravel
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

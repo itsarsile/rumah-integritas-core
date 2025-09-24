@@ -15,18 +15,24 @@ class AdminMenuSeeder extends Seeder
         $trackingId = $this->upsertMenu('Tracking Permintaan', null, 'dashboard.tracking', 5, 'feathericon-trending-up');
         $approvalId = $this->upsertMenu('Manajemen Persetujuan', null, 'dashboard.approvals', 6, 'feathericon-check-circle');
         $userMgmtId = $this->upsertMenu('Manajemen Pengguna', null, null, 7, 'feathericon-user');
+        $appearanceId = $this->upsertMenu('Pengaturan Tampilan', null, null, 8, 'feathericon-image');
         $this->upsertMenu('User', $userMgmtId, 'dashboard.user-management', 1);
         $this->upsertMenu('Role', $userMgmtId, 'dashboard.role-management', 2);
         $this->upsertMenu('RBAC', $userMgmtId, 'dashboard.access-control', 3);
+        $this->upsertMenu('Slider Login', $appearanceId, 'dashboard.login-slider', 1);
         $logoutId = $this->upsertMenu('Logout', null, 'logout', 99, 'feathericon-log-out');
         $settingsId = $this->upsertMenu('Setting', null, 'dashboard.settings', 90, 'feathericon-settings');
 
-        foreach ([$trackingId, $approvalId, $userMgmtId, $settingsId, $logoutId] as $menuId) {
+        foreach ([$trackingId, $approvalId, $userMgmtId, $appearanceId, $settingsId, $logoutId] as $menuId) {
             $this->attachRole($menuId, $adminRoleId);
         }
         // Attach children to admin
         $children = DB::table('menus')->where('parent_id', $userMgmtId)->pluck('id');
         foreach ($children as $cid) {
+            $this->attachRole($cid, $adminRoleId);
+        }
+        $appearanceChildren = DB::table('menus')->where('parent_id', $appearanceId)->pluck('id');
+        foreach ($appearanceChildren as $cid) {
             $this->attachRole($cid, $adminRoleId);
         }
     }
