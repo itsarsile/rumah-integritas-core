@@ -11,7 +11,6 @@ use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 use App\Models\ActivityLog;
 use Livewire\WithFileUploads;
-use Debugbar; // Add Debugbar facade
 
 use Livewire\Attributes\Title;
 
@@ -34,26 +33,12 @@ class Create extends Component
     {
         $this->consumptionTypes = ConsumptionType::all();
         $this->divisions = Division::all();
-        Debugbar::info('Consumption Types loaded', $this->consumptionTypes->toArray());
     }
 
     public function submit()
     {
-        Debugbar::info('Submit method called', [
-            'user_id' => Auth::id(),
-            'form_data' => $this->only([
-                'request_title',
-                'event_request_date',
-                'audience_count',
-                'email',
-                'consumption_type_id',
-                'description',
-            ]),
-        ]);
-
         try {
             if (!Auth::user()->hasPermissionTo('create consumption')) {
-                Debugbar::error('Permission denied for user: ' . Auth::user()->id);
                 session()->flash('error', 'Anda tidak memiliki izin untuk membuat permintaan konsumsi');
                 return redirect()->back();
             }
@@ -83,7 +68,6 @@ class Create extends Component
                 'updated_at' => now(),
             ];
 
-            Debugbar::info('Attempting to create ConsumptionReport', $requestData);
             $report = ConsumptionReport::create($requestData);
             // Log activity for submission
             ActivityLog::create([
@@ -99,15 +83,11 @@ class Create extends Component
                     'audience_count' => $this->audience_count,
                 ],
             ]);
-            Debugbar::info('ConsumptionReport created successfully', $report->toArray());
             session()->flash('message', 'Permintaan konsumsi berhasil dibuat');
-            Debugbar::info('Redirecting to consumption.index');
             $this->resetForm();
         } catch (ValidationException $e) {
-            Debugbar::error('Validation failed', $e->errors());
             throw $e;
         } catch (Exception $e) {
-            Debugbar::error('Error creating ConsumptionReport', ['error' => $e->getMessage()]);
             session()->flash('error', $e->getMessage());
             return redirect()->back();
         }
@@ -131,7 +111,6 @@ class Create extends Component
 
     public function render()
     {
-        Debugbar::info('Rendering consumption.create view');
         return view('livewire.consumption.create');
     }
 }

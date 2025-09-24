@@ -6,8 +6,6 @@ use App\Livewire\Components\DataTable;
 use App\Models\ConsumptionReport;
 use App\Models\Division;
 use App\Models\ConsumptionType;
-use Livewire\Component;
-use Debugbar;
 use Livewire\Attributes\Title;
 
 

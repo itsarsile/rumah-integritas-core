@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Title;
 use Livewire\Component;
-use Debugbar;
 
 class Create extends Component
 {

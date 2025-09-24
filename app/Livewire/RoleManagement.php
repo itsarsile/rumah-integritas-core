@@ -2,7 +2,6 @@
 
 namespace App\Livewire;
 
-use Barryvdh\Debugbar\Facades\Debugbar;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;

@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Livewire\Component;
-use Debugbar;
 
 class Menus extends Component
 {
@@ -43,7 +42,6 @@ class Menus extends Component
             'root' => $grouped->get(null, collect()), // root menus (no parent)
             'children' => $grouped->except(null),         // child menus
         ];
-        Debugbar::info('fetched menus', $this->menus);
     }
 
     public function render()

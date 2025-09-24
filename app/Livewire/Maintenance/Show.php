@@ -5,7 +5,6 @@ namespace App\Livewire\Maintenance;
 use App\Models\MaintenanceReports;
 use Livewire\Attributes\Title;
 use Livewire\Component;
-use Debugbar;
 
 class Show extends Component
 {
@@ -16,7 +15,6 @@ class Show extends Component
     {
         $this->id = $id;
         $this->maintenance = MaintenanceReports::with(['creator', 'divisions', 'assetType', 'images'])->findOrFail($id);
-        Debugbar::info($this->maintenance);
     }
 
     #[Title('Detail Pemeliharaan')]

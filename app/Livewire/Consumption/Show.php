@@ -6,7 +6,6 @@ use App\Models\ConsumptionReport;
 use App\Models\ConsumptionType;
 use Livewire\Attributes\Title;
 use Livewire\Component;
-use Debugbar;
 
 class Show extends Component
 {
@@ -16,8 +15,6 @@ class Show extends Component
     {
         $this->id = $id;
         $this->consumption = ConsumptionReport::with('creator', 'divisions', 'consumptionType')->findOrFail($id);
-        Debugbar::info('Detail Konsumsi', ['data' => $this->consumption]);
-
     }
 
     #[Title('Detail Konsumsi')]
