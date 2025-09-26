@@ -38,9 +38,10 @@ class Create extends Component
     public function submit()
     {
         try {
-            if (!Auth::user()->hasPermissionTo('create consumption')) {
+            // Use Gate-based check to avoid exceptions if permission is not yet created
+            if (!Auth::user() || !Auth::user()->can('create consumption')) {
                 session()->flash('error', 'Anda tidak memiliki izin untuk membuat permintaan konsumsi');
-                return redirect()->back();
+                return; // Stop here; let the page show the flash error
             }
 
             $this->validate([
@@ -89,7 +90,7 @@ class Create extends Component
             throw $e;
         } catch (Exception $e) {
             session()->flash('error', $e->getMessage());
-            return redirect()->back();
+            return; // Keep user on the form and show error
         }
     }
 

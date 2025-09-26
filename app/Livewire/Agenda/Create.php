@@ -46,8 +46,7 @@ class Create extends Component
             'created_by'   => Auth::id(),
             'pic_id'       => $this->person_in_charge_id,
             'status'       => 'pending',
-            'created_by' => now(),
-
+            // timestamps are handled automatically
         ]);
 
         // Activity log for agenda submission
