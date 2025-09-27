@@ -19,15 +19,16 @@ class Master extends DataTable
         // Define columns with proper structure
         $this->columns = [
             ['key' => 'created_at', 'label' => 'Waktu', 'format' => 'datetime'],
-            ['key' => 'activity', 'label' => 'Aktivitas', 'text' => 'Sa&P'],
+            ['key' => 'report_code', 'label' => 'Kode Laporan'],
+            ['key' => 'report_title', 'label' => 'Judul Laporan', 'class' => 'truncate max-w-sm'],
+            ['key' => 'report_description', 'label' => 'Ringkasan', 'class' => 'truncate max-w-lg'],
             [
                 'key' => 'creator.name',
                 'label' => 'Pengaju',
                 'view' => 'components.user-avatar',
                 'viewData' => ['user' => 'creator'],
             ],
-            ['key' => 'status', 'label' => 'Status', 'format' => 'status', 'class' => ''],
-            ['key' => 'report_description', 'label' => 'Deskripsi', 'class' => 'truncate max-w-xs'],
+            ['key' => 'status', 'label' => 'Status', 'format' => 'status'],
             [
                 'key' => 'actions',
                 'label' => 'Aksi',
@@ -37,44 +38,37 @@ class Master extends DataTable
         ];
 
         // Define searchable columns
-        $this->searchableColumns = ['user_name', 'description'];
+        $this->searchableColumns = ['report_code', 'report_title', 'report_description'];
 
         // Define sortable columns
         $this->sortableColumns = [
             ['key' => 'created_at'],
-            ['key' => 'user_name'],
+            ['key' => 'report_title'],
+            ['key' => 'status'],
         ];
 
         // Define filterable columns
         $this->filterableColumns = [
             [
-                'key' => 'activity',
-                'label' => 'Aktivitas',
-                'type' => 'select',
-                'options' => [
-                    'Sa&P' => 'Sa&P',
-                    'Login' => 'Login',
-                    'Logout' => 'Logout',
-                    'Create' => 'Create',
-                    'Update' => 'Update',
-                    'Delete' => 'Delete',
-                    // Add more activity types as needed
-                ]
+                'key' => 'report_title',
+                'label' => 'Judul Laporan',
+                'type' => 'text',
             ],
             [
-                'key' => 'created_at',
-                'label' => 'Tanggal',
-                'type' => 'date_range'
+                'key' => 'report_description',
+                'label' => 'Deskripsi',
+                'type' => 'text',
             ],
             [
                 'key' => 'status',
                 'label' => 'Status',
                 'type' => 'select',
                 'options' => [
-                    'pending' => 'Menunggu',
-                    'accepted' => 'Disetujui',
-                    'rejected' => 'Ditolak',
-                ]
+                    'draft' => 'Draft',
+                    'in_progress' => 'Sedang Berjalan',
+                    'completed' => 'Selesai',
+                    'published' => 'Dipublikasikan',
+                ],
             ],
         ];
 
