@@ -19,15 +19,17 @@ class UserSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'delete report']);
         Permission::firstOrCreate(['name' => 'view report']);
 
-        $roleSuperAdmin = Role::create(['name' => 'super-admin']);
-        $roleUser = Role::create(['name' => 'user']);
-        $roleAdmin = Role::create(['name' => 'admin']);
-        $roleSupervisor = Role::create(['name' => 'supervisor']);
-        $roleOPD = Role::create(['name' => 'opd']);
+        $roleSuperAdmin = Role::firstOrCreate(['name' => 'super-admin']);
+        $roleUser       = Role::firstOrCreate(['name' => 'user']);
+        $roleAdmin      = Role::firstOrCreate(['name' => 'admin']);
+        $roleSupervisor = Role::firstOrCreate(['name' => 'supervisor']);
+        $roleOPD        = Role::firstOrCreate(['name' => 'opd']);
 
-        $superAdmin = User::create(
+        $superAdmin = User::firstOrCreate(
             [
                 'email' => 'superadmin@example.com',
+            ],
+            [
                 'name' => 'Super Admin',
                 'password' => bcrypt('password'),
             ],
@@ -35,9 +37,11 @@ class UserSeeder extends Seeder
 
         $superAdmin->assignRole($roleSuperAdmin);
 
-        $user = User::create(
+        $user = User::firstOrCreate(
             [
                 'email' => 'user@example.com',
+            ],
+            [
                 'name' => 'User',
                 'password' => bcrypt('password'),
             ],
@@ -45,9 +49,11 @@ class UserSeeder extends Seeder
 
         $user->assignRole($roleUser);
 
-        $admin = User::create(
+        $admin = User::firstOrCreate(
             [
                 'email' => 'admin@example.com',
+            ],
+            [
                 'name' => 'Admin',
                 'password' => bcrypt('password'),
             ],
@@ -55,9 +61,11 @@ class UserSeeder extends Seeder
 
         $admin->assignRole($roleAdmin);
 
-        $supervisor = User::create(
+        $supervisor = User::firstOrCreate(
             [
                 'email' => 'supervisor@example.com',
+            ],
+            [
                 'name' => 'Supervisor',
                 'password' => bcrypt('password'),
             ],
@@ -65,9 +73,11 @@ class UserSeeder extends Seeder
 
         $supervisor->assignRole($roleSupervisor);
 
-        $opd = User::create(
+        $opd = User::firstOrCreate(
             [
                 'email' => 'opd@example.com',
+            ],
+            [
                 'name' => 'OPD',
                 'password' => bcrypt('password'),
             ],

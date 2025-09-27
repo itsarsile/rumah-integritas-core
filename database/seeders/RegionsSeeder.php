@@ -15,12 +15,12 @@ class RegionsSeeder extends Seeder
     {
         //
 
-        Regions::create([
+        Regions::firstOrCreate([
             'name' => 'Jakarta',
             'code' => 'JKT',
         ]);
 
-        Regions::create([
+        Regions::firstOrCreate([
             'name' => 'Bandung',
             'code' => 'BND',
         ]);

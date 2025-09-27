@@ -13,28 +13,28 @@ class RegionalGovernmentOrganizationSeeder extends Seeder
      */
     public function run(): void
     {
-        RegionalGovernmentOrganization::create([
+        RegionalGovernmentOrganization::firstOrCreate([
             'name' => 'Dinas Pendidikan dan Kebudayaan',
             'code' => 'DISDIKBUD-001',
             'address' => 'Jl. Pendidikan No. 10',
             'region_id' => 1, 
         ]);
 
-        RegionalGovernmentOrganization::create([
+        RegionalGovernmentOrganization::firstOrCreate([
             'name' => 'Dinas Kesehatan',
             'code' => 'DINKES-002',
             'address' => 'Jl. Kesehatan No. 5',
             'region_id' => 1, 
         ]);
 
-        RegionalGovernmentOrganization::create([
+        RegionalGovernmentOrganization::firstOrCreate([
             'name' => 'Dinas Perhubungan',
             'code' => 'DISHUB-003',
             'address' => 'Jl. Perhubungan No. 2',
             'region_id' => 2, 
         ]);
 
-        RegionalGovernmentOrganization::create([
+        RegionalGovernmentOrganization::firstOrCreate([
             'name' => 'Dinas Pekerjaan Umum dan Penataan Ruang',
             'code' => 'DPU-004',
             'address' => 'Jl. P.U No. 8',

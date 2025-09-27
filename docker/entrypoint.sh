@@ -4,9 +4,7 @@ set -e
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-exec "$@"
-
-# Run Laravel optimizations
+# Run Laravel optimizations (best-effort)
 if [ "$APP_ENV" = "production" ]; then
     echo "Running production optimizations..."
     php artisan config:cache || true
