@@ -36,6 +36,12 @@ class Create extends Component
 
     public ?int $findings;
 
+    public function removeFile(int $index): void
+    {
+        if (isset($this->files[$index])) {
+            array_splice($this->files, $index, 1);
+        }
+    }
 
     public function loadOPD()
     {
@@ -98,7 +104,7 @@ class Create extends Component
                 ],
             ]);
 
-            session()->flash('message', 'Audit report created successfully with code: ' . $reportCode);
+            session()->flash(key: 'message', value: 'Audit report created successfully with code: ' . $reportCode);
 
             $this->reset(['selectedOpd', 'lhpNumber', 'title', 'description', 'files', 'findings']);
 

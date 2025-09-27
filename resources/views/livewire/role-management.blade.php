@@ -1,234 +1,237 @@
-<div>
-    {{-- Role Management Header --}}
-    <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-        <div>
-            <h1 class="text-3xl font-bold text-base-content">Role Management</h1>
-            <p class="text-base-content/60 mt-1">Manage and monitor your application roles</p>
+<div class="card bg-white w-full border border-base-200 rounded-2xl">
+    <div class="p-6 border-b border-base-200">
+        <div class="card-title">
+            Manajemen Role
         </div>
-        <button wire:click="openCreateModal" class="btn btn-primary">
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-            </svg>
-            Add New Role
-        </button>
-    </div>
+        <span class="text-sm font-light">Daftar semua role</span>
+    </div>      
 
-    {{-- Stats Cards --}}
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div class="stat bg-base-100 shadow rounded-box">
-            <div class="stat-figure text-primary">
-                <x-feathericon-shield class="w-8 h-8 text-primary"/>
+    <div class="p-4 border-b border-base-200">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="border border-base-200 rounded-2xl p-4 space-y-4">
+                <div class="stat-title">Total Role</div>
+                <div class="flex items-center justify-between text-primary">
+                    <p class="text-4xl font-medium">{{ $totalRoles }}</p>               
+                    <x-feathericon-shield class="w-8 h-8 text-primary"/>
+                </div>
+                <div class="stat-desc">Active roles in the system</div>
             </div>
-            <div class="stat-title">Total Roles</div>
-            <div class="stat-value text-primary">{{ $totalRoles }}</div>
-            <div class="stat-desc">Active roles in the system</div>
-        </div>
-
-        <div class="stat bg-base-100 shadow rounded-box">
-            <div class="stat-figure text-success">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
+    
+            <div class="border border-base-200 rounded-2xl p-4 space-y-4">
+                <div class="stat-title">Total Permissions</div>
+                <div class="flex items-center justify-between text-success">
+                    <p class="text-4xl font-medium">{{ $totalPermissions }}</p>               
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>            
+                </div>
+                <div class="stat-desc">Available permissions</div>
             </div>
-            <div class="stat-title">Total Permissions</div>
-            <div class="stat-value text-success">{{ $totalPermissions }}</div>
-            <div class="stat-desc">Available permissions</div>
         </div>
     </div>
 
     {{-- Filters and Search --}}
-    <div class="card bg-base-100 shadow-sm mb-6">
+    <div class="card bg-white">
         <div class="card-body">
-            <div class="flex flex-col lg:flex-row gap-4">
+            <div class="flex flex-col lg:flex-row gap-4 lg:justify-between">
                 {{-- Search Input --}}
-                <div class="form-control flex-1">
-                    <div class="input-group">
-                        <input type="text" placeholder="Search roles..." class="input input-bordered flex-1"
-                            wire:model.live="search">
-                        <button class="btn btn-square">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
-                        </button>
+                <div class="form-control relative w-72">
+                    <input 
+                        type="text" 
+                        placeholder="Search users..." 
+                        class="input input-bordered flex-1 border border-base-200 bg-white pr-6" 
+                        wire:model.live="search"
+                    >
+                    <svg class="w-5 h-5 absolute right-4 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    {{-- Guard Filter (if multiple guards are used) --}}
+                    <div class="form-control">
+                        <select class="select select-bordered border border-base-200 bg-white" wire:model.live="guardFilter">
+                            <option value="">All Guards</option>
+                            <option value="web">Web</option>
+                            <option value="api">API</option>
+                        </select>
                     </div>
-                </div>
+    
+                    {{-- Per Page --}}
+                    <div class="form-control">
+                        <select class="select select-bordered border border-base-200 bg-white" wire:model.live="perPage">
+                            <option value="10">10 per page</option>
+                            <option value="25">25 per page</option>
+                            <option value="50">50 per page</option>
+                            <option value="100">100 per page</option>
+                        </select>
+                    </div>
 
-                {{-- Guard Filter (if multiple guards are used) --}}
-                <div class="form-control">
-                    <select class="select select-bordered" wire:model.live="guardFilter">
-                        <option value="">All Guards</option>
-                        <option value="web">Web</option>
-                        <option value="api">API</option>
-                        <!-- Add more guards as needed -->
-                    </select>
-                </div>
-
-                {{-- Per Page --}}
-                <div class="form-control">
-                    <select class="select select-bordered" wire:model.live="perPage">
-                        <option value="10">10 per page</option>
-                        <option value="25">25 per page</option>
-                        <option value="50">50 per page</option>
-                        <option value="100">100 per page</option>
-                    </select>
+                    <button wire:click="openCreateModal" class="btn btn-primary">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        Add New Role
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
     {{-- Roles Table --}}
-    <div class="card bg-base-100 shadow-sm overflow-visible">
-        <div class="card-body p-0">
-            <div class="overflow-x-auto">
-                <table class="table table-zebra">
-                    <thead>
-                        <tr>
-                            <th wire:click="sortBy('name')" class="cursor-pointer hover:bg-base-200">
-                                <div class="flex items-center gap-2">
-                                    Name
-                                    @if($sortField === 'name')
-                                        @if($sortDirection === 'asc')
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M5 15l7-7 7 7"></path>
-                                            </svg>
-                                        @else
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M19 9l-7 7-7-7"></path>
-                                            </svg>
+    <div class="px-4 pb-4">
+        <div class="card border border-base-200 rounded-2xl overflow-hidden">
+            <div class="card-body p-0">
+                <div class="overflow-x-auto">
+                    <table class="table">
+                        <thead class="bg-base-100">
+                            <tr>
+                                <th wire:click="sortBy('name')" class="cursor-pointer hover:bg-base-200">
+                                    <div class="flex items-center gap-2">
+                                        Name
+                                        @if($sortField === 'name')
+                                            @if($sortDirection === 'asc')
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M5 15l7-7 7 7"></path>
+                                                </svg>
+                                            @else
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M19 9l-7 7-7-7"></path>
+                                                </svg>
+                                            @endif
                                         @endif
-                                    @endif
-                                </div>
-                            </th>
-                            <th>Guard</th>
-                            <th>Permissions</th>
-                            <th wire:click="sortBy('created_at')" class="cursor-pointer hover:bg-base-200">
-                                <div class="flex items-center gap-2">
-                                    Created
-                                    @if($sortField === 'created_at')
-                                        @if($sortDirection === 'asc')
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M5 15l7-7 7 7"></path>
-                                            </svg>
-                                        @else
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M19 9l-7 7-7-7"></path>
-                                            </svg>
+                                    </div>
+                                </th>
+                                <th>Guard</th>
+                                <th>Permissions</th>
+                                <th wire:click="sortBy('created_at')" class="cursor-pointer hover:bg-base-200">
+                                    <div class="flex items-center gap-2">
+                                        Created
+                                        @if($sortField === 'created_at')
+                                            @if($sortDirection === 'asc')
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M5 15l7-7 7 7"></path>
+                                                </svg>
+                                            @else
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M19 9l-7 7-7-7"></path>
+                                                </svg>
+                                            @endif
                                         @endif
-                                    @endif
-                                </div>
-                            </th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($roles as $role)
-                            <tr wire:key="{{ $role->id }}">
-                                <td>
-                                    <div class="flex items-center gap-3">
-                                        <div>
-                                            <div class="font-bold">{{ $role->name }}</div>
+                                    </div>
+                                </th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($roles as $role)
+                                <tr wire:key="{{ $role->id }}">
+                                    <td>
+                                        <div class="flex items-center gap-3">
+                                            <div>
+                                                <div class="px-2 py-1 text-xs border border-base-300 rounded-full w-fit">{{ $role->name }}</div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="badge badge-outline">{{ $role->guard_name }}</div>
-                                </td>
-                                <td class="align-top">
-                                    <div class="flex flex-wrap gap-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
-                                        @forelse($role->permissions as $permission)
-                                            <div class="badge badge-primary badge-sm whitespace-nowrap">{{ $permission->name }}</div>
-                                        @empty
-                                            <span class="text-sm opacity-50">No permissions</span>
-                                        @endforelse
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="text-sm">{{ $role->created_at->format('M d, Y') }}</div>
-                                    <div class="text-xs opacity-50">{{ $role->created_at->diffForHumans() }}</div>
-                                </td>
-                                <td>
-                                    <div class="dropdown dropdown-end">
-                                        <div tabindex="0" class="btn btn-ghost btn-xs">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    </td>
+                                    <td>
+                                        {{ $role->guard_name }}
+                                    </td>
+                                    <td class="align-top">
+                                        <div class="flex flex-wrap gap-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
+                                            @forelse($role->permissions as $permission)
+                                                <div class="badge badge-primary badge-sm whitespace-nowrap">{{ $permission->name }}</div>
+                                            @empty
+                                                <span class="text-sm opacity-50">No permissions</span>
+                                            @endforelse
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="text-sm">{{ $role->created_at->format('M d, Y') }}</div>
+                                        <div class="text-xs opacity-50">{{ $role->created_at->diffForHumans() }}</div>
+                                    </td>
+                                    <td>
+                                        <div class="dropdown dropdown-end">
+                                            <div tabindex="0" class="btn btn-ghost btn-xs">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z">
+                                                    </path>
+                                                </svg>
+                                            </div>
+                                            <ul tabindex="0"
+                                                class="menu dropdown-content z-50 p-2 shadow bg-base-100 rounded-box w-52">
+                                                {{-- <li><a wire:click="viewRole({{ $role->id }})">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                            viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                                            </path>
+                                                        </svg>
+                                                        View Details
+                                                    </a></li> --}}
+                                                <li><a wire:click="openMenuConfigModal({{ $role->id }})">
+                                                        <x-feathericon-menu class="w-4 h-4" />
+                                                        Configure Menu
+                                                    </a></li>
+                                                <li><a wire:click="editRole({{ $role->id }})">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                            viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                                            </path>
+                                                        </svg>
+                                                        Edit Role
+                                                    </a></li>
+                                                <div class="divider my-1"></div>
+                                                <li><a wire:click="deleteRole({{ $role->id }})" class="text-error">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                            viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                                            </path>
+                                                        </svg>
+                                                        Delete
+                                                    </a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="text-center py-8">
+                                        <div class="flex flex-col items-center gap-4">
+                                            <svg class="w-16 h-16 text-base-300" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z">
+                                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z">
                                                 </path>
                                             </svg>
+                                            <div class="text-center">
+                                                <h3 class="text-lg font-semibold text-base-content">No roles found</h3>
+                                                <p class="text-base-content/60">Try adjusting your search or filter criteria</p>
+                                            </div>
+                                            @if($search || $guardFilter)
+                                                <button wire:click="clearFilters" class="btn btn-outline btn-sm">
+                                                    Clear Filters
+                                                </button>
+                                            @endif
                                         </div>
-                                        <ul tabindex="0"
-                                            class="menu dropdown-content z-50 p-2 shadow bg-base-100 rounded-box w-52">
-                                            <li><a wire:click="viewRole({{ $role->id }})">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
-                                                        </path>
-                                                    </svg>
-                                                    View Details
-                                                </a></li>
-                                            <li><a wire:click="openMenuConfigModal({{ $role->id }})">
-                                                    <x-feathericon-menu class="w-4 h-4" />
-                                                    Configure Menu
-                                                </a></li>
-                                            <li><a wire:click="editRole({{ $role->id }})">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-                                                        </path>
-                                                    </svg>
-                                                    Edit Role
-                                                </a></li>
-                                            <div class="divider my-1"></div>
-                                            <li><a wire:click="deleteRole({{ $role->id }})" class="text-error">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                                        </path>
-                                                    </svg>
-                                                    Delete
-                                                </a></li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="text-center py-8">
-                                    <div class="flex flex-col items-center gap-4">
-                                        <svg class="w-16 h-16 text-base-300" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z">
-                                            </path>
-                                        </svg>
-                                        <div class="text-center">
-                                            <h3 class="text-lg font-semibold text-base-content">No roles found</h3>
-                                            <p class="text-base-content/60">Try adjusting your search or filter criteria</p>
-                                        </div>
-                                        @if($search || $guardFilter)
-                                            <button wire:click="clearFilters" class="btn btn-outline btn-sm">
-                                                Clear Filters
-                                            </button>
-                                        @endif
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -290,7 +293,7 @@
                 </button>
             </div>
 
-            <form wire:submit.prevent="createRole" class="space-y-6">
+            <form wire:submit.prevent="createRole" class="space-y-2">
                 <!-- Role Name Section -->
                 <fieldset class="fieldset">
                     <legend class="fieldset-legend">
@@ -299,7 +302,7 @@
                         </span>
                     </legend>
                     <input type="text" placeholder="Enter a descriptive role name..."
-                        class="input input-bordered input-lg bg-base-100 border-2 focus:border-primary focus:outline-none transition-all duration-200 hover:border-primary/50 w-full"
+                        class="input input-bordered bg-white border-1 focus:border-primary focus:outline-none transition-all duration-200 hover:border-primary/50 w-full"
                         wire:model="name">
                     @error('name')
                         <label class="label">
@@ -324,7 +327,7 @@
                         <span class="label-text-alt text-base-content/60">Security context</span>
                     </legend>
                     <select
-                        class="select select-bordered select-lg bg-base-100 border-2 focus:border-secondary focus:outline-none transition-all duration-200 hover:border-secondary/50 w-full"
+                        class="select select-bordered bg-white border-1 focus:border-secondary focus:outline-none transition-all duration-200 hover:border-secondary/50 w-full"
                         wire:model="guard_name">
                         <option value="web" class="flex items-center">
                             🌐 Web Guard
@@ -348,7 +351,7 @@
                 </fieldset>
 
                 <!-- Permissions Section -->
-                <div class="form-control">
+                <div class="form-control mt-4">
                     <label class="label">
                         <span class="label-text font-semibold text-base-content flex items-center gap-2">
                             <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -464,7 +467,7 @@
                 <!-- Action Buttons -->
                 <div class="flex gap-3 pt-4 border-t border-base-200">
                     <button type="submit"
-                        class="btn btn-primary btn-lg flex-1 gap-2 shadow-lg hover:shadow-xl transition-all duration-200">
+                        class="btn btn-primary flex-1 gap-2 shadow-lg hover:shadow-xl transition-all duration-200">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -472,7 +475,7 @@
                         Create Role
                     </button>
                     <button type="button"
-                        class="btn btn-outline btn-lg px-8 hover:bg-base-200 transition-all duration-200"
+                        class="btn btn-outline px-8 hover:bg-base-200 transition-all duration-200"
                         wire:click="closeCreateModal">
                         Cancel
                     </button>
@@ -513,7 +516,7 @@
                 </button>
             </div>
 
-            <form wire:submit.prevent="updateRole" class="space-y-6">
+            <form wire:submit.prevent="updateRole" class="space-y-2">
                 <!-- Role Name Section -->
                 <fieldset class="fieldset">
                     <legend class="fieldset-legend">
@@ -522,7 +525,7 @@
                         </span>
                     </legend>
                     <input type="text" placeholder="Enter role name..."
-                        class="w-full input input-bordered input-lg bg-base-100 border-2 focus:border-warning focus:outline-none transition-all duration-200 hover:border-warning/50"
+                        class="w-full input input-bordered bg-white border-1 focus:border-warning focus:outline-none transition-all duration-200 hover:border-warning/50"
                         wire:model="name">
                     @error('name')
                         <label class="label">
@@ -552,7 +555,7 @@
                         <span class="label-text-alt text-base-content/60">Security context</span>
                     </legend>
                     <select
-                        class="w-full select select-bordered select-lg bg-base-100 border-2 focus:border-info focus:outline-none transition-all duration-200 hover:border-info/50"
+                        class="w-full select select-bordered bg-white border-1 focus:border-info focus:outline-none transition-all duration-200 hover:border-info/50"
                         wire:model="guard_name">
                         <option value="web" class="flex items-center">
                             🌐 Web Guard
@@ -676,7 +679,7 @@
                 <!-- Action Buttons -->
                 <div class="flex gap-3 pt-4 border-t border-base-200">
                     <button type="submit"
-                        class="btn btn-warning btn-lg flex-1 gap-2 shadow-lg hover:shadow-xl transition-all duration-200">
+                        class="btn btn-warning flex-1 gap-2 shadow-lg hover:shadow-xl transition-all duration-200">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
@@ -685,7 +688,7 @@
                         Update Role
                     </button>
                     <button type="button"
-                        class="btn btn-outline btn-lg px-8 hover:bg-base-200 transition-all duration-200"
+                        class="btn btn-outline px-8 hover:bg-base-200 transition-all duration-200"
                         wire:click="closeEditModal">
                         Cancel
                     </button>

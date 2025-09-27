@@ -1,73 +1,103 @@
-<div class="space-y-4 border border-base-content/20 rounded-md p-4 bg-white">
+<div class="space-y-4">
     {{-- The whole world belongs to you. --}}
-    <div class="grid lg:grid-cols-3 gap-6">
-        <div class="card card-border rounded-md">
+    <div class="grid lg:grid-cols-3 gap-4">
+        <div class="card card-border rounded-2xl bg-white">
             <div class="card-body">
                 <h2 class="card-title font-normal">
-                    <x-feathericon-file />
+                    <svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4.08929 5.22077C4.40238 3.58559 5.51194 2.23332 6.99869 1.58324C6.56642 0.836028 5.75851 0.333313 4.83319 0.333313C3.45248 0.333313 2.33319 1.4526 2.33319 2.83331C2.33319 3.95497 3.07187 4.90409 4.08929 5.22077Z" fill="#929292"/>
+                        <path d="M4.07041 7.00789C2.16972 7.13247 0.666626 8.71361 0.666626 10.6458C0.666626 10.9335 0.899811 11.1666 1.18746 11.1666H3.18484C3.67135 10.4068 4.3424 9.77636 5.13476 9.33868C4.59447 8.68109 4.21871 7.88318 4.07041 7.00789Z" fill="#929292"/>
+                        <path d="M14.8151 11.1666H16.8125C17.1001 11.1666 17.3333 10.9335 17.3333 10.6458C17.3333 8.7136 15.8302 7.13245 13.9295 7.00788C13.7812 7.88315 13.4054 8.68105 12.8652 9.33863C13.6576 9.77631 14.3286 10.4067 14.8151 11.1666Z" fill="#929292"/>
+                        <path d="M13.9106 5.22072C14.9279 4.90399 15.6665 3.95491 15.6665 2.83331C15.6665 1.4526 14.5472 0.333313 13.1665 0.333313C12.2412 0.333313 11.4333 0.836 11.0011 1.58318C12.4879 2.23322 13.5975 3.58551 13.9106 5.22072Z" fill="#929292"/>
+                        <path d="M13.125 13.6666H4.87497C4.62183 13.6666 4.41662 13.4801 4.41663 13.25C4.41668 11.6391 5.85312 10.3333 7.62503 10.3333H10.375C12.1469 10.3333 13.5833 11.6392 13.5833 13.25C13.5833 13.4801 13.3781 13.6666 13.125 13.6666Z" fill="#929292"/>
+                        <path d="M12.3333 6.16665C12.3333 8.0076 10.8409 9.49998 8.99996 9.49998C7.15901 9.49998 5.66663 8.0076 5.66663 6.16665C5.66663 4.3257 7.15901 2.83331 8.99996 2.83331C10.8409 2.83331 12.3333 4.3257 12.3333 6.16665Z" fill="#929292"/>
+                    </svg>
                     Total Permintaan
                 </h2>
-                <p class="text-3xl font-bold">{{ $stats['total'] ?? 0 }}</p>
-
+                <div class="flex flex-row justify-center gap-2 items-center">
+                    <span class="text-3xl font-bold">{{ $stats['total'] ?? 0 }} </span>
+                    <span class="bg-green-100 border border-green-200 text-green-800 text-xs font-light mr-2 px-2.5 py-0.5 rounded-full">Permintaan</span>
+                </div>
             </div>
         </div>
-        <div class="card card-border  rounded-md">
+        <div class="card card-border rounded-2xl bg-white">
             <div class="card-body text-warning-content">
                 <h2 class="card-title font-normal">
-                    <x-feathericon-alert-circle class="w-6 h-6" />
+                    <svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4.08929 5.22077C4.40238 3.58559 5.51194 2.23332 6.99869 1.58324C6.56642 0.836028 5.75851 0.333313 4.83319 0.333313C3.45248 0.333313 2.33319 1.4526 2.33319 2.83331C2.33319 3.95497 3.07187 4.90409 4.08929 5.22077Z" fill="#929292"/>
+                        <path d="M4.07041 7.00789C2.16972 7.13247 0.666626 8.71361 0.666626 10.6458C0.666626 10.9335 0.899811 11.1666 1.18746 11.1666H3.18484C3.67135 10.4068 4.3424 9.77636 5.13476 9.33868C4.59447 8.68109 4.21871 7.88318 4.07041 7.00789Z" fill="#929292"/>
+                        <path d="M14.8151 11.1666H16.8125C17.1001 11.1666 17.3333 10.9335 17.3333 10.6458C17.3333 8.7136 15.8302 7.13245 13.9295 7.00788C13.7812 7.88315 13.4054 8.68105 12.8652 9.33863C13.6576 9.77631 14.3286 10.4067 14.8151 11.1666Z" fill="#929292"/>
+                        <path d="M13.9106 5.22072C14.9279 4.90399 15.6665 3.95491 15.6665 2.83331C15.6665 1.4526 14.5472 0.333313 13.1665 0.333313C12.2412 0.333313 11.4333 0.836 11.0011 1.58318C12.4879 2.23322 13.5975 3.58551 13.9106 5.22072Z" fill="#929292"/>
+                        <path d="M13.125 13.6666H4.87497C4.62183 13.6666 4.41662 13.4801 4.41663 13.25C4.41668 11.6391 5.85312 10.3333 7.62503 10.3333H10.375C12.1469 10.3333 13.5833 11.6392 13.5833 13.25C13.5833 13.4801 13.3781 13.6666 13.125 13.6666Z" fill="#929292"/>
+                        <path d="M12.3333 6.16665C12.3333 8.0076 10.8409 9.49998 8.99996 9.49998C7.15901 9.49998 5.66663 8.0076 5.66663 6.16665C5.66663 4.3257 7.15901 2.83331 8.99996 2.83331C10.8409 2.83331 12.3333 4.3257 12.3333 6.16665Z" fill="#929292"/>
+                    </svg>
                     Menunggu Review
                 </h2>
-                <p class="text-3xl font-bold">{{ $stats['pending'] ?? 0 }}</p>
+                <div class="flex flex-row justify-center gap-2 items-center">
+                    <span class="text-3xl font-bold">{{ $stats['pending'] ?? 0 }} </span>
+                    <span class="bg-yellow-100 border border-yellow-200 text-yellow-800 text-xs font-light mr-2 px-2.5 py-0.5 rounded-full">Menunggu Review</span>
+                </div>
 
             </div>
         </div>
-        <div class="card card-border  rounded-md">
+        <div class="card card-border rounded-2xl bg-white">
             <div class="card-body text-success-content">
                 <h2 class="card-title font-normal">
-                    <x-feathericon-check-circle />
+                    <svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4.08929 5.22077C4.40238 3.58559 5.51194 2.23332 6.99869 1.58324C6.56642 0.836028 5.75851 0.333313 4.83319 0.333313C3.45248 0.333313 2.33319 1.4526 2.33319 2.83331C2.33319 3.95497 3.07187 4.90409 4.08929 5.22077Z" fill="#929292"/>
+                        <path d="M4.07041 7.00789C2.16972 7.13247 0.666626 8.71361 0.666626 10.6458C0.666626 10.9335 0.899811 11.1666 1.18746 11.1666H3.18484C3.67135 10.4068 4.3424 9.77636 5.13476 9.33868C4.59447 8.68109 4.21871 7.88318 4.07041 7.00789Z" fill="#929292"/>
+                        <path d="M14.8151 11.1666H16.8125C17.1001 11.1666 17.3333 10.9335 17.3333 10.6458C17.3333 8.7136 15.8302 7.13245 13.9295 7.00788C13.7812 7.88315 13.4054 8.68105 12.8652 9.33863C13.6576 9.77631 14.3286 10.4067 14.8151 11.1666Z" fill="#929292"/>
+                        <path d="M13.9106 5.22072C14.9279 4.90399 15.6665 3.95491 15.6665 2.83331C15.6665 1.4526 14.5472 0.333313 13.1665 0.333313C12.2412 0.333313 11.4333 0.836 11.0011 1.58318C12.4879 2.23322 13.5975 3.58551 13.9106 5.22072Z" fill="#929292"/>
+                        <path d="M13.125 13.6666H4.87497C4.62183 13.6666 4.41662 13.4801 4.41663 13.25C4.41668 11.6391 5.85312 10.3333 7.62503 10.3333H10.375C12.1469 10.3333 13.5833 11.6392 13.5833 13.25C13.5833 13.4801 13.3781 13.6666 13.125 13.6666Z" fill="#929292"/>
+                        <path d="M12.3333 6.16665C12.3333 8.0076 10.8409 9.49998 8.99996 9.49998C7.15901 9.49998 5.66663 8.0076 5.66663 6.16665C5.66663 4.3257 7.15901 2.83331 8.99996 2.83331C10.8409 2.83331 12.3333 4.3257 12.3333 6.16665Z" fill="#929292"/>
+                    </svg>
                     Disetujui
                 </h2>
-                <p class="text-3xl font-bold">{{ $stats['approved'] ?? 0 }}</p>
-
+                <div class="flex flex-row justify-center gap-2 items-center">
+                    <span class="text-3xl font-bold">{{ $stats['approved'] ?? 0 }} </span>
+                    <span class="bg-green-100 border border-green-200 text-green-800 text-xs font-light mr-2 px-2.5 py-0.5 rounded-full">Disetujui</span>
+                </div>
             </div>
         </div>
     </div>
 
-    <section class="border border-dashed border-primary/40 rounded-xl bg-white shadow-sm">
-        <header class="flex items-center justify-between px-6 py-4">
-            <h3 class="text-lg font-semibold">Sistem Audit & Pengawasan</h3>
-            <a class="btn btn-primary btn-sm rounded-full px-6" href="{{ route('dashboard.audit.master') }}">More</a>
-        </header>
-        <div class="px-6 pb-6 overflow-x-auto">
-            <livewire:dashboard.table.audit-reports-table />
-        </div>
-    </section>
-    <section class="border border-dashed border-primary/40 rounded-xl bg-white shadow-sm">
-        <header class="flex items-center justify-between px-6 py-4">
-            <h3 class="text-lg font-semibold">Manajemen Konsumsi</h3>
-            <a class="btn btn-primary btn-sm rounded-full px-6" href="{{ route('dashboard.consumption.master') }}">More</a>
-        </header>
-        <div class="px-6 pb-6 overflow-x-auto">
-            <livewire:dashboard.table.consumption-reports-table />
-        </div>
-    </section>
-    <section class="border border-dashed border-primary/40 rounded-xl bg-white shadow-sm">
-        <header class="flex items-center justify-between px-6 py-4">
-            <h3 class="text-lg font-semibold">Manajemen Pemeliharaan</h3>
-            <a class="btn btn-primary btn-sm rounded-full px-6" href="{{ route('dashboard.maintenance.master') }}">More</a>
-        </header>
-        <div class="px-6 pb-6 overflow-x-auto">
-            <livewire:dashboard.table.maintenance-reports-table />
-        </div>
-    </section>
-    <section class="border border-dashed border-primary/40 rounded-xl bg-white shadow-sm">
-        <header class="flex items-center justify-between px-6 py-4">
-            <h3 class="text-lg font-semibold">Manajemen Agenda</h3>
-            <a class="btn btn-primary btn-sm rounded-full px-6" href="{{ route('dashboard.agenda.master') }}">More</a>
-        </header>
-        <div class="px-6 pb-6 overflow-x-auto">
-            <livewire:dashboard.table.agenda-reports-table />
-        </div>
-    </section>
+    <div class="p-6 rounded-2xl border border-base-200 space-y-4 bg-white">
+        <section class="space-y-4">
+            <header class="flex items-center justify-between">
+                <h3 class="text-lg">Sistem Audit & Pengawasan</h3>
+                <a class="btn btn-primary shadow-none btn-sm rounded-xl px-6" href="{{ route('dashboard.audit.master') }}">More</a>
+            </header>
+            <div class="overflow-x-auto">
+                <livewire:dashboard.table.audit-reports-table />
+            </div>
+        </section>
+        <section class="space-y-4">
+            <header class="flex items-center justify-between">
+                <h3 class="text-lg">Manajemen Konsumsi</h3>
+                <a class="btn btn-primary shadow-none btn-sm rounded-xl px-6" href="{{ route('dashboard.consumption.master') }}">More</a>
+            </header>
+            <div class="overflow-x-auto">
+                <livewire:dashboard.table.consumption-reports-table />
+            </div>
+        </section>
+        <section class="space-y-4">
+            <header class="flex items-center justify-between">
+                <h3 class="text-lg">Manajemen Pemeliharaan</h3>
+                <a class="btn btn-primary shadow-none btn-sm rounded-xl px-6" href="{{ route('dashboard.maintenance.master') }}">More</a>
+            </header>
+            <div class="overflow-x-auto">
+                <livewire:dashboard.table.maintenance-reports-table />
+            </div>
+        </section>
+        <section class="space-y-4">
+            <header class="flex items-center justify-between">
+                <h3 class="text-lg">Manajemen Agenda</h3>
+                <a class="btn btn-primary shadow-none btn-sm rounded-xl px-6" href="{{ route('dashboard.agenda.master') }}">More</a>
+            </header>
+            <div class="overflow-x-auto">
+                <livewire:dashboard.table.agenda-reports-table />
+            </div>
+        </section>
+    </div>
 
 </div>

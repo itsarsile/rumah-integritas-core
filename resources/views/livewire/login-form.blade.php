@@ -1,4 +1,4 @@
-<div class="space-y-4 max-w-md mx-auto bg-base-200 h-full">
+<div class="space-y-4 max-w-md mx-auto h-full">
     {{-- The best athlete wants his opponent at his best. --}}
     <div class="flex justify-center">
         <x-app.logo />

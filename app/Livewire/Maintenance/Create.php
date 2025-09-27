@@ -26,6 +26,13 @@ class Create extends Component
     public $description;
     public $files = [];
 
+    public function removeFile(int $index): void
+    {
+        if (isset($this->files[$index])) {
+            array_splice($this->files, $index, 1);
+        }
+    }
+
     public function mount()
     {
         $this->divisions = Division::all();
@@ -84,6 +91,7 @@ class Create extends Component
         ]);
 
         session()->flash('message', 'Permintaan pemeliharaan berhasil diajukan!');
+        $this->resetForm();
     }
     
     public function resetForm()

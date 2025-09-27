@@ -16,8 +16,8 @@
                     $isExternal = Str::startsWith($slide->image_path, ['http://', 'https://']);
                     $imageUrl = $isExternal ? $slide->image_path : Storage::disk('public')->url($slide->image_path);
                 @endphp
-                <div id="login-slide-{{ $slide->id }}" class="carousel-item relative w-full">
-                    <img src="{{ $imageUrl }}" class="w-full h-full object-cover" alt="Slide {{ $slide->title ?? $index + 1 }}" />
+                <div id="login-slide-{{ $slide->id }}" class="carousel-item relative w-full min-w-xs">
+                    <img src="{{ $imageUrl }}" class="w-full h-[512px] object-cover bg-neutral-400" alt="Slide {{ $slide->title ?? $index + 1 }}" />
 
                     @if ($slide->title || $slide->subtitle || $slide->description || ($slide->button_text && $slide->button_url))
                         <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-8 text-white space-y-3">

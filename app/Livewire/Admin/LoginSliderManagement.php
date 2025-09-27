@@ -244,6 +244,7 @@ class LoginSliderManagement extends Component
     private function closeFormModal(): void
     {
         $this->showFormModal = false;
+        $this->resetForm();
     }
 
     private function deleteImageIfLocal(?string $path): void

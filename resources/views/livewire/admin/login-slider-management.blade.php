@@ -5,210 +5,218 @@
         </div>
     @endif
 
-    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <div>
-            <h1 class="text-3xl font-bold text-base-content">Pengaturan Slider Login</h1>
-            <p class="text-base-content/60 mt-1">Kelola konten carousel yang tampil di halaman login.</p>
-        </div>
-        <button wire:click="openCreateModal" class="btn btn-primary">Tambah Slide</button>
-    </div>
-
-    <div class="card bg-base-100 shadow-sm">
-        <div class="card-body">
+    <div class="card bg-white w-full border border-base-200 rounded-2xl">
+        <div class="p-6 border-b border-base-200">
+            <div class="card-title">
+                Pengaturan Slider Login
+            </div>
+            <span class="text-sm font-light">Kelola konten carousel yang tampil di halaman login.</span>
+        </div>          
+        <div class="card-body space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="form-control md:col-span-2">
-                    <label class="label">
-                        <span class="label-text">Cari Slide</span>
-                    </label>
-                    <div class="input-group">
-                        <input type="text" class="input input-bordered flex-1" placeholder="Cari judul atau deskripsi..." wire:model.live="search">
-                        <button class="btn btn-square" wire:click="$refresh">
-                            <x-feathericon-search class="w-5 h-5" />
-                        </button>
+                <div class="form-control md:col-span-2 space-y-2">
+                    <div class="form-control relative w-72">
+                        <input 
+                            type="text" 
+                            placeholder="Cari judul atau deskripsi..." 
+                            class="input input-bordered flex-1 border border-base-200 bg-white pr-6" 
+                            wire:model.live="search"
+                        >
+                        <svg class="w-5 h-5 absolute right-4 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
                     </div>
                 </div>
-                <div class="form-control">
-                    <label class="label">
-                        <span class="label-text">Tampilkan</span>
-                    </label>
-                    <select class="select select-bordered" wire:model.live="perPage">
+                <div class="flex items-center gap-2">
+                    <select class="select select-bordered border border-base-200 bg-white w-56" wire:model.live="perPage">
                         <option value="5">5 per halaman</option>
                         <option value="10">10 per halaman</option>
                         <option value="15">15 per halaman</option>
                         <option value="25">25 per halaman</option>
                     </select>
+                    <button wire:click="openCreateModal" class="btn btn-primary">Tambah Slide</button>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div class="card bg-base-100 shadow-sm overflow-hidden">
-        <div class="card-body p-0">
-            <div class="overflow-x-auto">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Preview</th>
-                            <th class="cursor-pointer" wire:click="sortBy('title')">
-                                <div class="flex items-center gap-2">
-                                    Judul
-                                    @if($sortField === 'title')
-                                        @if($sortDirection === 'asc')
-                                            <x-feathericon-arrow-up class="w-4 h-4" />
-                                        @else
-                                            <x-feathericon-arrow-down class="w-4 h-4" />
-                                        @endif
-                                    @endif
-                                </div>
-                            </th>
-                            <th>Konten</th>
-                            <th class="cursor-pointer" wire:click="sortBy('display_order')">
-                                <div class="flex items-center gap-2">
-                                    Urutan
-                                    @if($sortField === 'display_order')
-                                        @if($sortDirection === 'asc')
-                                            <x-feathericon-arrow-up class="w-4 h-4" />
-                                        @else
-                                            <x-feathericon-arrow-down class="w-4 h-4" />
-                                        @endif
-                                    @endif
-                                </div>
-                            </th>
-                            <th>Status</th>
-                            <th class="w-40">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($slides as $slide)
-                            @php
-                                $isExternal = Str::startsWith($slide->image_path, ['http://', 'https://']);
-                                $imageUrl = $isExternal ? $slide->image_path : Storage::disk('public')->url($slide->image_path);
-                            @endphp
-                            <tr>
-                                <td>
-                                    <div class="mask mask-squircle h-20 w-32 overflow-hidden bg-base-200">
-                                        <img src="{{ $imageUrl }}" alt="{{ $slide->title ?? 'Slide' }}" class="object-cover w-full h-full">
-                                    </div>
-                                </td>
-                                <td class="align-top">
-                                    <div class="font-semibold text-base-content">{{ $slide->title ?: '—' }}</div>
-                                    <div class="text-sm text-base-content/60">{{ $slide->subtitle ?: '—' }}</div>
-                                </td>
-                                <td class="align-top">
-                                    <p class="text-sm text-base-content/80 line-clamp-3 whitespace-pre-line">{{ $slide->description ?: '—' }}</p>
-                                    @if($slide->button_text && $slide->button_url)
-                                        <div class="mt-2 text-sm">
-                                            <span class="badge badge-outline">{{ $slide->button_text }}</span>
-                                            <a href="{{ $slide->button_url }}" target="_blank" class="link link-primary ml-2">{{ $slide->button_url }}</a>
+            <div class="card border border-base-200 rounded-2xl overflow-hidden">
+                <div class="card-body p-0">
+                    <div class="overflow-x-auto">
+                        <table class="table">
+                            <thead class="bg-base-100">
+                                <tr>
+                                    <th>Preview</th>
+                                    <th class="cursor-pointer" wire:click="sortBy('title')">
+                                        <div class="flex items-center gap-2">
+                                            Judul
+                                            @if($sortField === 'title')
+                                                @if($sortDirection === 'asc')
+                                                    <x-feathericon-arrow-up class="w-4 h-4" />
+                                                @else
+                                                    <x-feathericon-arrow-down class="w-4 h-4" />
+                                                @endif
+                                            @endif
                                         </div>
-                                    @endif
-                                </td>
-                                <td class="align-top">
-                                    <div class="flex items-center gap-2">
-                                        <span class="font-semibold">{{ $slide->display_order }}</span>
-                                        <div class="join join-vertical">
-                                            <button class="btn btn-xs join-item" wire:click="moveSlideUp({{ $slide->id }})" title="Naikkan">
-                                                <x-feathericon-arrow-up class="w-4 h-4" />
-                                            </button>
-                                            <button class="btn btn-xs join-item" wire:click="moveSlideDown({{ $slide->id }})" title="Turunkan">
-                                                <x-feathericon-arrow-down class="w-4 h-4" />
-                                            </button>
+                                    </th>
+                                    <th>Konten</th>
+                                    <th class="cursor-pointer" wire:click="sortBy('display_order')">
+                                        <div class="flex items-center gap-2">
+                                            Urutan
+                                            @if($sortField === 'display_order')
+                                                @if($sortDirection === 'asc')
+                                                    <x-feathericon-arrow-up class="w-4 h-4" />
+                                                @else
+                                                    <x-feathericon-arrow-down class="w-4 h-4" />
+                                                @endif
+                                            @endif
                                         </div>
-                                    </div>
-                                </td>
-                                <td class="align-top">
-                                    @if($slide->is_active)
-                                        <div class="badge badge-success gap-2">
-                                            <span class="w-2 h-2 rounded-full bg-success-content"></span>
-                                            Aktif
-                                        </div>
-                                    @else
-                                        <div class="badge badge-ghost gap-2">
-                                            <span class="w-2 h-2 rounded-full bg-base-content/50"></span>
-                                            Nonaktif
-                                        </div>
-                                    @endif
-                                </td>
-                                <td class="align-top">
-                                    <div class="flex flex-wrap gap-2">
-                                        <button class="btn btn-ghost btn-xs" wire:click="toggleStatus({{ $slide->id }})">
-                                            {{ $slide->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
-                                        </button>
-                                        <button class="btn btn-outline btn-xs" wire:click="openEditModal({{ $slide->id }})">
-                                            Edit
-                                        </button>
-                                        <button class="btn btn-error btn-xs" wire:click="confirmDelete({{ $slide->id }})">
-                                            Hapus
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="text-center py-10">
-                                    <div class="flex flex-col items-center gap-2 text-base-content/60">
-                                        <x-feathericon-image class="w-10 h-10" />
-                                        <span>Tidak ada slide. Tambahkan slide pertama Anda.</span>
-                                        <button class="btn btn-primary btn-sm mt-2" wire:click="openCreateModal">Tambah Slide</button>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-            @if ($slides->hasPages())
-                <div class="p-4">
-                    {{ $slides->links() }}
+                                    </th>
+                                    <th>Status</th>
+                                    <th class="w-40">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($slides as $slide)
+                                    @php
+                                        $isExternal = Str::startsWith($slide->image_path, ['http://', 'https://']);
+                                        $imageUrl = $isExternal ? $slide->image_path : Storage::disk('public')->url($slide->image_path);
+                                    @endphp
+                                    <tr>
+                                        <td>
+                                            <a href="{{ $imageUrl }}" target="_blank">
+                                                <div class="w-16 h-16 overflow-hidden bg-base-200 rounded-xl">
+                                                    <img src="{{ $imageUrl }}" alt="{{ $slide->title ?? 'Slide' }}" class="object-cover w-full h-full">
+                                                </div>
+                                            </a>
+                                        </td>
+                                        <td class="align-center">
+                                            <div class="font-semibold text-base-content">{{ $slide->title ?: '—' }}</div>
+                                            <div class="text-sm text-base-content/60">{{ $slide->subtitle ?: '—' }}</div>
+                                        </td>
+                                        <td class="align-center">
+                                            <p class="text-sm text-base-content/80 line-clamp-3 whitespace-pre-line">{{ $slide->description ?: '—' }}</p>
+                                            @if($slide->button_text && $slide->button_url)
+                                                <div class="mt-2 text-sm">
+                                                    <span class="px-2 py-1 rounded-full bg-primary text-white text-[10px]">{{ $slide->button_text }}</span>
+                                                    <a href="{{ $slide->button_url }}" target="_blank" class="link link-primary text-[10px]">{{ $slide->button_url }}</a>
+                                                </div>
+                                            @endif
+                                        </td>
+                                        <td class="align-center">
+                                            <div class="flex items-center gap-2">
+                                                <span class="font-semibold">{{ $slide->display_order }}</span>
+                                                {{-- <div class="join join-vertical">
+                                                    <button class="btn btn-xs join-item" wire:click="moveSlideUp({{ $slide->id }})" title="Naikkan">
+                                                        <x-feathericon-arrow-up class="w-4 h-4" />
+                                                    </button>
+                                                    <button class="btn btn-xs join-item" wire:click="moveSlideDown({{ $slide->id }})" title="Turunkan">
+                                                        <x-feathericon-arrow-down class="w-4 h-4" />
+                                                    </button>
+                                                </div> --}}
+                                            </div>
+                                        </td>
+                                        <td class="align-center">
+                                            @if($slide->is_active)
+                                                <span class="bg-green-100 border border-green-200 text-green-800 text-xs font-light mr-2 px-2.5 py-0.5 rounded-full">Aktif</span>
+                                            @else
+                                                <span class="bg-red-100 border border-red-200 text-red-800 text-xs font-light mr-2 px-2.5 py-0.5 rounded-full">Nonaktif</span>
+                                            @endif
+                                        </td>
+                                        <td class="align-center">
+                                            <div class="flex">
+                                                <button class="size-7 flex items-center justify-center rounded-lg hover:bg-neutral-200/70 {{ $slide->is_active ? ' text-red-800' : ' text-green-800' }} " wire:click="toggleStatus({{ $slide->id }})">
+                                                    {{ $slide->is_active ? "off" : "on" }}
+                                                </button>
+                                                <button wire:click="openEditModal({{ $slide->id }})" class="size-7 flex items-center justify-center rounded-lg hover:bg-neutral-200/70">
+                                                    <i class="fas fa-eye text-neutral-500"></i>
+                                                </button>
+                                                <button wire:click="confirmDelete({{ $slide->id }})" class="size-7 flex items-center justify-center rounded-lg hover:bg-neutral-200/70">
+                                                    <i class="fas fa-trash text-red-500"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="text-center py-10">
+                                            <div class="flex flex-col items-center gap-2 text-base-content/60">
+                                                <x-feathericon-image class="w-10 h-10" />
+                                                <span>Tidak ada slide. Tambahkan slide pertama Anda.</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                    @if ($slides->hasPages())
+                        <div class="p-4">
+                            {{ $slides->links() }}
+                        </div>
+                    @endif
                 </div>
-            @endif
+            </div>
         </div>
     </div>
 
     <div class="modal" x-data="{ open: @entangle('showFormModal') }" :class="{ 'modal-open': open }">
         <div class="modal-box max-w-3xl bg-base-100">
-            <h3 class="font-bold text-lg mb-4">{{ $editingSlideId ? 'Edit Slide' : 'Tambah Slide' }}</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="form-control md:col-span-2">
-                    <label class="label"><span class="label-text">Judul</span></label>
-                    <input type="text" class="input input-bordered" placeholder="Judul slide" wire:model.live="title">
+            <div
+                class="flex items-center justify-between p-6 bg-gradient-to-r from-warning/10 to-info/10 -m-6 mb-6 rounded-t-3xl border-b border-base-200">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-warning/20 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-base-content">{{ $editingSlideId ? 'Edit Slide' : 'Tambah Slide' }}</h3>
+                        <p class="text-sm text-base-content/70">{{ $editingSlideId ? 'Edit slide untuk halaman login' : 'Tambahkan slide baru untuk halaman login' }}</p>
+                    </div>
                 </div>
-                <div class="form-control md:col-span-2">
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-control">
+                    <label class="label"><span class="label-text">Judul</span></label>
+                    <input type="text" class="input input-bordered w-full border border-base-200 bg-white" placeholder="Judul slide" wire:model.live="title">
+                </div>
+                <div class="form-control">
                     <label class="label"><span class="label-text">Subjudul</span></label>
-                    <input type="text" class="input input-bordered" placeholder="Subjudul" wire:model.live="subtitle">
+                    <input type="text" class="input input-bordered w-full border border-base-200 bg-white" placeholder="Subjudul" wire:model.live="subtitle">
                 </div>
                 <div class="form-control md:col-span-2">
                     <label class="label"><span class="label-text">Deskripsi</span></label>
-                    <textarea class="textarea textarea-bordered" rows="3" placeholder="Deskripsi singkat" wire:model.live="description"></textarea>
+                    <textarea class="textarea textarea-bordered w-full border border-base-200 bg-white" rows="3" placeholder="Deskripsi singkat" wire:model.live="description"></textarea>
                 </div>
                 <div class="form-control">
                     <label class="label"><span class="label-text">Teks Tombol</span></label>
-                    <input type="text" class="input input-bordered" placeholder="Contoh: Pelajari lebih lanjut" wire:model.live="button_text">
+                    <input type="text" class="input input-bordered w-full border border-base-200 bg-white" placeholder="Contoh: Pelajari lebih lanjut" wire:model.live="button_text">
                 </div>
                 <div class="form-control">
                     <label class="label"><span class="label-text">URL Tombol</span></label>
-                    <input type="url" class="input input-bordered" placeholder="https://contoh.go.id" wire:model.live="button_url">
+                    <input type="url" class="input input-bordered w-full border border-base-200 bg-white" placeholder="https://contoh.go.id" wire:model.live="button_url">
                     @error('button_url')
                         <span class="text-error text-sm mt-1">{{ $message }}</span>
                     @enderror
                 </div>
                 <div class="form-control">
                     <label class="label"><span class="label-text">Urutan Tampil</span></label>
-                    <input type="number" min="0" class="input input-bordered" placeholder="Otomatis" wire:model.live="display_order">
+                    <input type="number" min="0" class="input input-bordered w-full border border-base-200 bg-white" placeholder="Otomatis" wire:model.live="display_order">
                     @error('display_order')
                         <span class="text-error text-sm mt-1">{{ $message }}</span>
                     @enderror
                 </div>
-                <div class="form-control">
+                <div class="form-control flex flex-col">
                     <label class="label"><span class="label-text">Status</span></label>
-                    <label class="label cursor-pointer justify-start gap-3">
+                    <label class="label cursor-pointer justify-start gap-3 mt-2">
                         <input type="checkbox" class="toggle toggle-primary" wire:model.live="is_active">
                         <span class="label-text">Tampilkan slide ini</span>
                     </label>
                 </div>
                 <div class="form-control md:col-span-2">
                     <label class="label"><span class="label-text">Gambar</span></label>
-                    <input type="file" class="file-input file-input-bordered w-full" accept="image/png,image/jpeg,image/webp" wire:model="image">
+                    <input type="file" class="file-input file-input-bordered w-full bg-white border border-base-200" accept="image/png,image/jpeg,image/webp" wire:model="image">
                     <span class="text-xs text-base-content/60 mt-1">Format JPG, PNG, atau WEBP maks. 4 MB.</span>
                     @error('image')
                         <span class="text-error text-sm mt-1">{{ $message }}</span>

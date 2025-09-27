@@ -5,19 +5,18 @@
     $initials = data_get($user, 'initials', strtoupper(substr($name, 0, 1)));
 @endphp
 
-<div class="flex items-center gap-2">
-    <div class="avatar">
-        @if($avatarUrl)
-            <div class="w-8 h-8 rounded-full ring ring-primary ring-offset-base-100 ring-offset-1 overflow-hidden">
+<div class="flex items-center gap-3 border border-base-200 rounded-full p-1 w-fit pr-3">
+    @if($avatarUrl)
+        <div class="avatar">
+            <div class="size-6 rounded-full border border-base-200 overflow-hidden">
                 <img src="{{ $avatarUrl }}" alt="Avatar of {{ $name }}" />
             </div>
+        </div>
         @else
-            <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-semibold">
+            <div class="size-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-semibold">
                 {{ $initials }}
             </div>
         @endif
-    </div>
-    <span class="truncate max-w-[12rem]">{{ $name }}</span>
-    
+    <span class="truncate max-w-[12rem] font-light">{{ $name }}</span>
 </div>
 

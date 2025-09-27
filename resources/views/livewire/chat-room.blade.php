@@ -1,7 +1,7 @@
 <!-- Single Root Container -->
-<div class="h-[calc(100vh-5rem)] bg-base-100 flex flex-col rounded-2xl shadow">
+<div class="h-[calc(100vh-5rem)] bg-white border border-base-200 overflow-hidden flex flex-col rounded-2xl">
     <!-- Mobile Header with Menu Toggle (visible only on mobile) -->
-    <div class="navbar bg-base-100 shadow-sm lg:hidden">
+    <div class="navbar bg-white shadow-sm lg:hidden">
         <div class="navbar-start">
             <button class="btn btn-ghost btn-circle" onclick="audit_sidebar.showModal()">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -25,9 +25,9 @@
     <!-- Main Container -->
     <div class="flex flex-1 min-h-0">
         <!-- Desktop Sidebar - Always visible on large screens -->
-        <div class="hidden lg:flex lg:w-1/3 lg:min-w-96 bg-base-100 border-r border-base-300 flex-col rounded-l-2xl">
+        <div class="hidden lg:flex lg:w-1/3 lg:min-w-96 bg-white border-r border-base-300 flex-col rounded-l-2xl">
             <!-- Desktop Header -->
-            <div class="p-4 border-b border-base-300 bg-base-200">
+            <div class="p-4 border-b border-base-300 bg-white">
                 <h2 class="text-lg font-semibold">Audit Reports</h2>
                 <p class="text-sm text-base-content/70">Select a report to view chat</p>
             </div>
@@ -48,9 +48,10 @@
                                 @php
                                     $status = $report['status'] ?? 'pending';
                                     $badgeClass = match($status) {
-                                        'accepted', 'approved' => 'badge-success',
-                                        'rejected' => 'badge-error',
-                                        default => 'badge-warning'
+                                        'pending' => 'bg-yellow-100 border border-yellow-200 text-yellow-800',
+                                        'rejected' => 'bg-red-100 border border-red-200 text-red-800',
+                                        'accepted', 'approved' => 'bg-green-100 border border-green-200 text-green-800',
+                                        default => 'bg-gray-100 border border-gray-200 text-gray-800',
                                     };
                                     $statusText = match($status) {
                                         'accepted', 'approved' => 'Disetujui',
@@ -58,7 +59,7 @@
                                         default => 'Menunggu',
                                     };
                                 @endphp
-                                <div class="badge {{ $badgeClass }} badge-sm">{{ $statusText }}</div>
+                                <div class="{{ $badgeClass }} text-xs font-light mr-2 px-2.5 py-0.5 rounded-full">{{ $statusText }}</div>
                             </div>
 
                             <!-- Date -->
@@ -102,7 +103,7 @@
         <div class="flex-1 flex flex-col min-w-0 bg-base-100 rounded-r-2xl">
             @if($currentAuditReport)
                 <!-- Desktop Chat Header -->
-                <div class="hidden lg:block bg-base-100 border-b border-base-300 shadow-sm">
+                <div class="hidden lg:block bg-white border-b border-base-300">
                     <div class="p-4">
                         <div class="flex items-center justify-between">
                             <div class="flex-1 min-w-0">
@@ -139,7 +140,7 @@
 
                 <!-- Sticky Attachment Header for current audit -->
                 @if($currentAuditReport)
-                <div class="sticky top-0 z-20 bg-base-100 px-4 pt-4 shadow-sm border-b border-base-300">
+                <div class="sticky top-0 z-[1] bg-base-100 px-4 pt-4 border-b border-base-300">
                     <div class="rounded-xl bg-base-100 p-4">
                         <div class="flex items-start justify-between">
                             <div>
@@ -150,10 +151,15 @@
                             </div>
                             @php
                                 $status = $currentAuditReport->status ?? 'pending';
-                                $badge = ($status === 'accepted' || $status === 'approved') ? 'badge-success' : ($status === 'rejected' ? 'badge-error' : 'badge-warning');
+                                $badgeClass = match($status) {
+                                    'pending' => 'bg-yellow-100 border border-yellow-200 text-yellow-800',
+                                    'rejected' => 'bg-red-100 border border-red-200 text-red-800',
+                                    'accepted', 'approved' => 'bg-green-100 border border-green-200 text-green-800',
+                                    default => 'bg-gray-100 border border-gray-200 text-gray-800',
+                                };
                                 $text = ($status === 'accepted' || $status === 'approved') ? 'Disetujui' : ($status === 'rejected' ? 'Ditolak' : 'Menunggu');
                             @endphp
-                            <div class="badge {{ $badge }} badge-sm">{{ $text }}</div>
+                            <div class="{{ $badgeClass }} text-xs font-light mr-2 px-2.5 py-0.5 rounded-full">{{ $text }}</div>
                         </div>
                         <div class="grid grid-cols-2 gap-4 mt-3 text-sm">
                             <div>
@@ -277,15 +283,15 @@
                 @endif
 
                 <!-- Message Input -->
-                <div class="bg-base-100 border-t border-base-300 p-4 safe-area-bottom">
-                    <form wire:submit.prevent="sendMessage" class="flex gap-2">
+                <div class="bg-white border-t border-base-300 p-4 safe-area-bottom">
+                    <form wire:submit.prevent="sendMessage" class="flex gap-2 border border-base-300 rounded-2xl p-1.5">
                         <!-- File Upload Button -->
-                        <label for="file-upload" class="btn btn-ghost btn-circle cursor-pointer">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div for="file-upload" class="rounded-xl size-10 border flex items-center justify-center border-base-300 cursor-pointer">
+                            <svg class="w-5 h-5 flex-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
                             </svg>
                             <input id="file-upload" type="file" wire:model="fileUpload" class="hidden">
-                        </label>
+                        </div>
                         
                         <!-- Message Input -->
                         <div class="flex-1">
@@ -293,7 +299,7 @@
                                 wire:model="newMessage" 
                                 type="text" 
                                 placeholder="Type your message..." 
-                                class="input input-bordered w-full focus:input-primary"
+                                class="input border-none bg-white shadow-none w-full focus:outline-none focus:shadow-none"
                                 autocomplete="off"
                                 maxlength="1000"
                             >
@@ -302,14 +308,14 @@
                         <!-- Send Button -->
                         <button 
                             type="submit" 
-                            class="btn btn-primary"
+                            class="size-10 rounded-xl bg-primary hover:bg-primary-focus flex items-center justify-center text-white cursor-pointer disabled:cursor-not-allowed"
                             wire:loading.attr="disabled"
                             wire:target="sendMessage">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5" fill="none" wire:loading.remove wire:target="sendMessage" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                             </svg>
-                            <span class="hidden sm:inline" wire:loading.remove wire:target="sendMessage">Send</span>
-                            <span class="hidden sm:inline" wire:loading wire:target="sendMessage">Sending...</span>
+                            {{-- <span class="hidden sm:inline" wire:loading.remove wire:target="sendMessage">Send</span>
+                            <span class="hidden sm:inline" wire:loading wire:target="sendMessage">Sending...</span> --}}
                             <span class="loading loading-spinner loading-sm sm:hidden" wire:loading wire:target="sendMessage"></span>
                         </button>
                     </form>

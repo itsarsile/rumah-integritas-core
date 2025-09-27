@@ -8,7 +8,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 
 #[Layout('layouts.app')]
-#[Title('Sistem Audit & Pengawasan')]
+#[Title('Sistem Audit dan Pengawasan')]
 class Master extends DataTable
 {
     public function mount()
