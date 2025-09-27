@@ -1,0 +1,10 @@
+[program:reverb]
+directory={{ app_root }}
+command=/usr/bin/php artisan reverb:start --host={{ reverb_host }} --port={{ reverb_port }}
+autostart=true
+autorestart=true
+user={{ app_user }}
+redirect_stderr=true
+stdout_logfile={{ app_root }}/storage/logs/reverb.log
+stopasgroup=true
+killasgroup=true

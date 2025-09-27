@@ -1,0 +1,47 @@
+---
+- name: Ensure project directory exists
+  file:
+    path: "{{ project_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Ensure rsync is installed (for synchronize)
+  apt:
+    name: rsync
+    state: present
+    update_cache: true
+  when: ansible_os_family == 'Debian'
+
+- name: Sync project sources to server (excluding heavy/dev files)
+  synchronize:
+    src: "{{ project_src }}"
+    dest: "{{ project_dir }}"
+    delete: true
+    archive: true
+    rsync_opts:
+      - "--exclude=.git/"
+      - "--exclude=infra/ansible/"
+      - "--exclude=node_modules/"
+      - "--exclude=vendor/"
+      - "--exclude=storage/logs/"
+      - "--exclude=storage/framework/cache/"
+      - "--exclude=storage/framework/views/"
+
+- name: Render .env from template
+  template:
+    src: .env.j2
+    dest: "{{ project_dir }}/.env"
+    mode: '0600'
+
+- name: Bring up the stack with build + pull
+  community.docker.docker_compose_v2:
+    project_src: "{{ project_dir }}"
+    state: present
+    pull: true
+    build: true
+
+- name: Run database migrations
+  command: docker compose -f {{ project_dir }}/docker-compose.yml exec -T app php artisan migrate --force
+
+- name: Seed database (AllInOne)
+  command: docker compose -f {{ project_dir }}/docker-compose.yml exec -T app php artisan db:seed --class=Database\\Seeders\\AllInOneSeeder --force

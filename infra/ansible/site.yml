@@ -1,0 +1,308 @@
+---
+- hosts: web
+  remote_user: deploy
+  become: true
+  become_method: sudo
+
+  vars:
+    app_user: deploy
+    app_root: /var/www/laravel
+    repo_url: "https://github.com/itsarsile/rumah-integritas-core.git"
+    branch: "main"
+    php_version: "8.4"
+    server_name: "example.com"
+    reverb_host: "127.0.0.1"
+    reverb_port: 8080
+    queue_conn: "redis"
+    db_name: laravel
+    db_user: laravel
+    db_password: secret
+
+  tasks:
+    # --- Base packages ---
+    - name: Ensure base packages are installed
+      apt:
+        name:
+          - git
+          - unzip
+          - curl
+          - software-properties-common
+          - redis-server
+          - supervisor
+        state: present
+        update_cache: yes
+
+    # --- PHP Installation ---
+    - name: Add PHP repository
+      apt_repository:
+        repo: ppa:ondrej/php
+        state: present
+
+    - name: Update package cache after adding PHP repo
+      apt:
+        update_cache: yes
+
+    - name: Install PHP and extensions
+      apt:
+        name:
+          - "php{{ php_version }}-fpm"
+          - "php{{ php_version }}-cli"
+          - "php{{ php_version }}-mbstring"
+          - "php{{ php_version }}-xml"
+          - "php{{ php_version }}-curl"
+          - "php{{ php_version }}-zip"
+          - "php{{ php_version }}-pgsql"   # includes pgsql + pdo_pgsql
+          - "php{{ php_version }}-redis"
+          - "php{{ php_version }}-gd"
+          - "php{{ php_version }}-bcmath"
+        state: present
+        update_cache: yes
+
+    - name: Restart PHP-FPM
+      service:
+        name: "php{{ php_version }}-fpm"
+        state: restarted
+
+    - name: Debug PHP extensions for Postgres
+      shell: php -i | grep -E "PDO drivers|pgsql"
+      register: php_pgsql_info
+      changed_when: false
+
+    - name: Show PHP pgsql extension info
+      debug:
+        msg: "{{ php_pgsql_info.stdout }}"
+
+    # --- Composer Installation ---
+    - name: Install Composer
+      get_url:
+        url: https://getcomposer.org/installer
+        dest: /tmp/composer-setup.php
+
+    - name: Move Composer binary
+      command: php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
+      args:
+        creates: /usr/local/bin/composer
+
+    # --- PostgreSQL 17 ---
+    - name: Create keyrings directory
+      file:
+        path: /usr/share/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Download and import PostgreSQL GPG key
+      shell: |
+        curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgresql-keyring.gpg
+      args:
+        creates: /usr/share/keyrings/postgresql-keyring.gpg
+
+    - name: Add PostgreSQL APT repository
+      apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/postgresql-keyring.gpg] http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main"
+        state: present
+        filename: "pgdg"
+        update_cache: no
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install PostgreSQL 17
+      apt:
+        name:
+          - postgresql-17
+          - postgresql-client-17
+          - libpq-dev
+          - python3-psycopg2
+        state: present
+
+    - name: Ensure PostgreSQL is running
+      service:
+        name: postgresql
+        state: started
+        enabled: true
+
+    - name: Create Laravel database
+      become_user: postgres
+      postgresql_db:
+        name: "{{ db_name }}"
+        state: present
+
+    - name: Create Laravel DB user
+      become_user: postgres
+      postgresql_user:
+        name: "{{ db_user }}"
+        password: "{{ db_password }}"
+        state: present
+
+    - name: Grant database privileges to Laravel user
+      become_user: postgres
+      postgresql_privs:
+        database: "{{ db_name }}"
+        roles: "{{ db_user }}"
+        type: database
+        privs: ALL
+        state: present
+
+    - name: Grant schema privileges on public to Laravel user
+      become_user: postgres
+      postgresql_privs:
+        database: "{{ db_name }}"
+        roles: "{{ db_user }}"
+        type: schema
+        objs: public
+        privs: ALL
+        state: present
+
+    # --- App directory ---
+    - name: Remove old repo if exists
+      file:
+        path: "{{ app_root }}"
+        state: absent
+
+    - name: Recreate app root
+      file:
+        path: "{{ app_root }}"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        mode: "0755"
+
+    # --- Git clone ---
+    - name: Deploy code (fresh clone)
+      git:
+        repo: "{{ repo_url }}"
+        dest: "{{ app_root }}"
+        version: "{{ branch }}"
+        accept_hostkey: yes
+      become_user: "{{ app_user }}"
+
+    # --- .env setup ---
+    - name: Write .env from template
+      template:
+        src: templates/env.j2
+        dest: "{{ app_root }}/.env"
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        mode: "0640"
+      become_user: "{{ app_user }}"
+
+    # --- Laravel setup ---
+    - name: Composer install (no dev)
+      command: composer install --no-dev --prefer-dist --optimize-autoloader
+      args:
+        chdir: "{{ app_root }}"
+      become_user: "{{ app_user }}"
+
+    # --- Node.js + Vite ---
+    - name: Install Node.js and npm
+      apt:
+        name:
+          - nodejs
+          - npm
+        state: present
+        update_cache: yes
+
+    - name: Install JS dependencies
+      command: npm install
+      args:
+        chdir: "{{ app_root }}"
+      become_user: "{{ app_user }}"
+
+    - name: Build frontend assets
+      command: npm run build
+      args:
+        chdir: "{{ app_root }}"
+      become_user: "{{ app_user }}"
+
+    - name: Generate app key
+      command: php artisan key:generate --force
+      args:
+        chdir: "{{ app_root }}"
+      become_user: "{{ app_user }}"
+
+    - name: Set permissions on storage and cache
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ app_user }}"
+        group: www-data
+        mode: "0775"
+      loop:
+        - "{{ app_root }}/storage"
+        - "{{ app_root }}/bootstrap/cache"
+
+    - name: Run migrations
+      command: php artisan migrate --force
+      args:
+        chdir: "{{ app_root }}"
+      become_user: "{{ app_user }}"
+
+    - name: Cache Laravel configuration
+      shell: |
+        php artisan config:cache
+        php artisan route:cache || true
+        php artisan view:cache || true
+      args:
+        chdir: "{{ app_root }}"
+      become_user: "{{ app_user }}"
+
+    # --- Nginx ---
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Configure Nginx vhost
+      template:
+        src: templates/nginx.conf.j2
+        dest: "/etc/nginx/sites-available/{{ server_name }}"
+      notify: Reload Nginx
+
+    - name: Enable vhost
+      file:
+        src: "/etc/nginx/sites-available/{{ server_name }}"
+        dest: "/etc/nginx/sites-enabled/{{ server_name }}"
+        state: link
+      notify: Reload Nginx
+
+    - name: Disable default vhost
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      notify: Reload Nginx
+
+    # --- Supervisor ---
+    - name: Supervisor - Reverb
+      template:
+        src: templates/supervisor-reverb.conf.j2
+        dest: /etc/supervisor/conf.d/reverb.conf
+      notify: Reload Supervisor
+
+    - name: Supervisor - Queue worker
+      template:
+        src: templates/supervisor-queue.conf.j2
+        dest: /etc/supervisor/conf.d/queue.conf
+      notify: Reload Supervisor
+
+    # --- Services ---
+    - name: Ensure services are started and enabled
+      service:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      loop:
+        - "php{{ php_version }}-fpm"
+        - nginx
+        - supervisor
+        - redis-server
+        - postgresql
+
+  handlers:
+    - name: Reload Nginx
+      service:
+        name: nginx
+        state: restarted
+
+    - name: Reload Supervisor
+      shell: supervisorctl reread && supervisorctl update && supervisorctl restart all

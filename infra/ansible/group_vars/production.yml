@@ -1,0 +1,19 @@
+# Vars for the 'production' inventory group.
+# Tip: store secrets with Ansible Vault: `ansible-vault encrypt infra/ansible/group_vars/production.yml`
+
+app_url: https://your-domain
+
+# Generate a new key locally:
+#   php -r "echo 'base64:'.base64_encode(random_bytes(32)).PHP_EOL;"
+app_key: ""
+
+db_name: laravel
+db_user: laravel
+db_password: secret
+
+# Optional Reverb config (use if enabling websockets)
+broadcast_connection: log
+reverb_app_id: 772945
+reverb_app_key: "oef7zcgfvl53ypszf1fr"
+reverb_app_secret: "ao2dw83noga1zxzhi283"
+
