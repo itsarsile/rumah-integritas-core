@@ -1,8 +1,8 @@
-<div>
-    <a class="btn btn-xs" href="{{ route('dashboard.audit.show', $audit->id) }}">
-        <x-feathericon-eye class="w-4 h-4" />
+<div class="flex">
+    <a class="size-7 flex items-center justify-center rounded-lg hover:bg-neutral-200/70" href="{{ route('dashboard.audit.show', $audit->id) }}">
+        <i class="fas fa-eye text-neutral-500"></i>
     </a>
-    <a href="{{ route('dashboard.audit.chat', $audit->id) }}" class="btn btn-xs">
-        <x-lucide-message-circle class="w-4 h-4" />
+    <a class="size-7 flex items-center justify-center rounded-lg hover:bg-neutral-200/70" href="{{ route('dashboard.audit.chat', $audit->id) }}">
+        <i class="fas fa-comment-dots text-neutral-500"></i>
     </a>
 </div>

@@ -31,7 +31,7 @@ class Show extends Component
     public function mount($id)
     {
         $this->id = $id;
-    $this->audit = AuditReports::with(['creator', 'regionalGovernmentOrganization'])->findOrFail($id);
+        $this->audit = AuditReports::with(['creator', 'regionalGovernmentOrganization'])->findOrFail($id);
     }
 
     public function deleteFile()
@@ -39,7 +39,7 @@ class Show extends Component
         try {
             if ($this->audit->hasLhpDocument()) {
                 $filePath = 'app/private/' . $this->audit->lhp_document_path;
-                
+
                 if (Storage::disk('local')->exists($filePath)) {
                     Storage::disk('local')->delete($filePath);
                 }

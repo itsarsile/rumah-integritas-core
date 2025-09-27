@@ -18,56 +18,84 @@
         </div>
     @endif
 
-    <div class="card bg-white">
+    <div class="card bg-white w-full border border-base-200 rounded-2xl">
+        <div class="p-6 border-b border-base-200">
+            <div class="card-title">
+                Manajemen Konsumsi
+            </div>
+        </div>  
         <div class="card-body">
-            <h2 class="card-title">Manajemen Konsumsi</h2>
-            <div class="divider"></div>
-            <table class="table">
-                <tr>
-                    <td class="w-1/3">Nama Pemohon</td>
-                    <td class="w-1/2">{{ $consumption->creator->name }}</td>
-                </tr>
-                <tr>
-                    <td class="w-1/2">Email Pemohon</td>
-                    <td class="w-1/2">{{ $consumption->email }}</td>
-                </tr>
-                <tr>
-                    <td class="w-1/2">Judul Kegiatan Rapat</td>
-                    <td class="w-1/2">{{ $consumption->request_title }}</td>
-                </tr>
-                <tr>
-                    <td>Waktu Pelaksanaan</td>
-                    <td>{{ $consumption->event_request_date->locale('id')->translatedFormat('j F Y') }}</td>
-                </tr>
-                <tr>
-                    <td>Status Pengajuan</td>
-                    <td>
-                        @php
-                            $status = $consumption->status;
-                            $statusText =
-                                $status == 'pending'
-                                    ? 'Menunggu'
-                                    : ($status == 'rejected'
-                                        ? 'Ditolak'
-                                        : ($status == 'accepted'
-                                            ? 'Diterima'
-                                            : 'Tidak diketahui'));
-                            $statusClass =
-                                $status == 'pending' ? 'badge badge-warning'
-                                : ($status == 'rejected' ? 'badge badge-error' : 'badge badge-success');
-                        @endphp
-                        <span class="{{ $statusClass }}">{{ $statusText }}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Jenis Konsumsi</td>
-                    <td>{{ $consumption->consumptionType->name }}</td>
-                </tr>
-                <tr>
-                    <td>Sub bagian/bagian/tim</td>
-                    <td>{{ $consumption->divisions->pluck('name')->implode(', ') }}</td>
-                </tr>
-            </table>
+            <div class="grid grid-cols-3 gap-4">
+                <div class="col-span-1">
+                    <label class="label"><span class="label-text font-medium">Nama Pemohon</span></label>
+                </div>
+                <div class="col-span-2 flex items-center gap-2">
+                    : <p> {{ $consumption->creator->name }}</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-3 gap-4">
+                <div class="col-span-1">
+                    <label class="label"><span class="label-text font-medium">Email Pemohon</span></label>
+                </div>
+                <div class="col-span-2 flex items-center gap-2">
+                    : <p> {{ $consumption->email }}</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-3 gap-4">
+                <div class="col-span-1">
+                    <label class="label"><span class="label-text font-medium">Judul Kegiatan Rapat</span></label>
+                </div>
+                <div class="col-span-2 flex items-center gap-2">
+                    : <p> {{ $consumption->request_title }}</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-3 gap-4">
+                <div class="col-span-1">
+                    <label class="label"><span class="label-text font-medium">Waktu Pelaksanaan</span></label>
+                </div>
+                <div class="col-span-2 flex items-center gap-2">
+                    : <p> {{ $consumption->event_request_date->locale('id')->translatedFormat('j F Y') }}</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-3 gap-4">
+                <div class="col-span-1">
+                    <label class="label"><span class="label-text font-medium">Status Pengajuan</span></label>
+                </div>
+                <div class="col-span-2 flex items-center gap-2">
+                    : 
+                    @php
+                        $statusLabel = match ($consumption->status) {
+                            'pending' => 'Menunggu',
+                            'rejected' => 'Ditolak',
+                            'accepted' => 'Disetujui',
+                            default => 'Tidak diketahui',
+                        };
+                        $statusClass = match ($consumption->status) {
+                            'pending' => 'bg-yellow-100 border border-yellow-200 text-yellow-800',
+                            'rejected' => 'bg-red-100 border border-red-200 text-red-800',
+                            'accepted' => 'bg-green-100 border border-green-200 text-green-800',
+                            default => 'bg-gray-100 border border-gray-200 text-gray-800',
+                        };
+                    @endphp
+                    <span class="{{ $statusClass }} text-xs font-light mr-2 px-2.5 py-0.5 rounded-full">{{ $statusLabel }}</span>
+                </div>
+            </div>
+            <div class="grid grid-cols-3 gap-4">
+                <div class="col-span-1">
+                    <label class="label"><span class="label-text font-medium">Jenis Konsumsi</span></label>
+                </div>
+                <div class="col-span-2 flex items-center gap-2">
+                    : <p> {{ $consumption->consumptionType->name }}</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-3 gap-4">
+                <div class="col-span-1">
+                    <label class="label"><span class="label-text font-medium">Sub bagian/divisi/tim</span></label>
+                </div>
+                <div class="col-span-2 flex items-start gap-2">
+                    : <p>{{ $consumption->divisions->pluck('name')->implode(', ') }}</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>

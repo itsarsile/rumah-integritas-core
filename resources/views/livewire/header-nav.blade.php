@@ -1,4 +1,4 @@
-<div class="sticky top-0 navbar z-10 border-b-1 border-base-content/20 bg-white {{ @request()->routeIs('login') ? 'hidden' : '' }}">
+<div class="sticky top-0 navbar z-10 border-b-1 border-base-200 bg-white {{ @request()->routeIs('login') ? 'hidden' : '' }}">
     <div class="navbar-start">
         <h1 class="text-xl font-bold cursor-default select-none ml-4">{{ $title }}</h1>
     </div>

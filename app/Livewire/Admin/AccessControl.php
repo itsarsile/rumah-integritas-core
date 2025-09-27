@@ -96,7 +96,7 @@ class AccessControl extends Component
         $final = array_values(array_unique(array_merge($keep, $selected)));
         $role->syncPermissions($final);
 
-        session()->flash('success', 'Permissions updated for role: ' . $role->name);
+        session()->flash('message', 'Permissions updated for role: ' . $role->name);
     }
 
     public function render()

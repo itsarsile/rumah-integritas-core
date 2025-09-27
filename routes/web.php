@@ -59,7 +59,7 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::prefix('/agenda')->group(function () {
         Route::get('/create', \App\Livewire\Agenda\Create::class)->name('dashboard.agenda.create');
         Route::get('/', \App\Livewire\Agenda\Master::class)->name('dashboard.agenda.master');
-        Route::get('/show/{id}', \App\Livewire\Consumption\Show::class)->name('dashboard.agenda.show');
+        Route::get('/show/{id}', \App\Livewire\Agenda\Show::class)->name('dashboard.agenda.show');
     });
 
     Route::get('/logs', ActivityLogs::class)->name('dashboard.logs');
