@@ -15,17 +15,31 @@ function initDaisyCarousels() {
     }
 
     let index = 0;
+    const dots = Array.from(scope.querySelectorAll('[data-carousel-go]'));
+
+    const updateIndicators = () => {
+      dots.forEach((dot, i) => {
+        if (i === index) {
+          dot.classList.add('bg-white');
+          dot.classList.remove('bg-white/30');
+        } else {
+          dot.classList.remove('bg-white');
+          dot.classList.add('bg-white/30');
+        }
+      });
+    };
     const scrollToIndex = (i, behavior = 'smooth') => {
       index = (i + items.length) % items.length;
       const target = items[index];
       if (!target) return;
       carousel.scrollTo({ left: target.offsetLeft, behavior });
+      updateIndicators();
     };
 
-    const prevBtn = scope.querySelector('[data-carousel-prev]');
-    const nextBtn = scope.querySelector('[data-carousel-next]');
-    if (prevBtn) prevBtn.addEventListener('click', () => scrollToIndex(index - 1));
-    if (nextBtn) nextBtn.addEventListener('click', () => scrollToIndex(index + 1));
+    // Indicator click handlers
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => scrollToIndex(i));
+    });
 
     const delayAttr = scope.getAttribute('data-carousel-interval') || '4000';
     let delay = parseInt(delayAttr, 10);
@@ -53,11 +67,13 @@ function initDaisyCarousels() {
           if (d < min) { min = d; nearest = i; }
         });
         index = nearest;
+        updateIndicators();
       }, 100);
     });
 
     // Initial position
     scrollToIndex(0, 'auto');
+    updateIndicators();
 
     carousel._daisyCarouselInit = true;
   });

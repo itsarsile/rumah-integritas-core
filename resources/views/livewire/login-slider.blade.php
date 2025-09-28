@@ -7,7 +7,7 @@
     @if ($slides->isNotEmpty())
         @php $total = $slides->count(); @endphp
 
-        <div class="w-full" data-carousel-scope data-carousel-interval="4000">
+        <div class="relative w-full" data-carousel-scope data-carousel-interval="4000">
         <div class="carousel w-full max-w-4xl rounded-xl overflow-hidden shadow-xl">
             @foreach ($slides as $index => $slide)
                 @php
@@ -16,10 +16,10 @@
                     $id = 'item' . ($index + 1);
                 @endphp
                 <div id="{{ $id }}" class="carousel-item w-full relative">
-                    <img src="{{ $imageUrl }}" class="w-full h-[512px] object-cover bg-neutral-400" alt="Slide {{ $slide->title ?? $index + 1 }}" />
+                    <img src="{{ $imageUrl }}" class="w-full h-[800px] object-cover bg-neutral-400" alt="Slide {{ $slide->title ?? $index + 1 }}" />
 
                     @if ($slide->title || $slide->subtitle || $slide->description || ($slide->button_text && $slide->button_url))
-                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-8 text-white space-y-3">
+                        <div class="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-8 text-white space-y-3">
                             @if ($slide->subtitle)
                                 <p class="text-sm uppercase tracking-wider text-white/80">{{ $slide->subtitle }}</p>
                             @endif
@@ -38,9 +38,15 @@
             @endforeach
         </div>
         @if ($total > 1)
-            <div class="flex w-full justify-center gap-2 py-2">
-                <button type="button" class="btn btn-sm" data-carousel-prev>❮</button>
-                <button type="button" class="btn btn-sm" data-carousel-next>❯</button>
+            <div class="absolute inset-x-0 bottom-6 z-20 flex w-full justify-center gap-3">
+                @foreach ($slides as $index => $slide)
+                    <button
+                        type="button"
+                        class="h-1.5 w-12 rounded-full bg-white/30 backdrop-blur-sm transition-colors"
+                        aria-label="Go to slide {{ $index + 1 }}"
+                        data-carousel-go="{{ $index }}"
+                    ></button>
+                @endforeach
             </div>
         @endif
         </div>
