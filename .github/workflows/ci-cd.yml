@@ -5,6 +5,14 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: "Run Ansible deploy"
+        required: false
+        default: "true"
+        type: choice
+        options: ["true", "false"]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -127,3 +135,73 @@ jobs:
             ${{ steps.meta.outputs.image_sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  deploy:
+    name: Deploy via Ansible
+    needs: tests
+    # Auto-deploy on push to main, or manual run when dispatch says true
+    if: >-
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_dispatch' && inputs.deploy == 'true')
+    runs-on: ubuntu-latest
+    env:
+      ANSIBLE_HOST_KEY_CHECKING: "false"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Ansible
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible
+
+      - name: Install Ansible collections
+        run: ansible-galaxy collection install -r infra/ansible/requirements.yml
+
+      - name: Start ssh-agent and add key
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: |
+            ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add host to known_hosts
+        if: secrets.SSH_HOST != ''
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p "${{ secrets.SSH_PORT || 22 }}" "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Prepare inventory (CI)
+        run: |
+          : "Create ephemeral inventory using secrets"
+          cat > infra/ansible/inventory.ci.ini << 'EOF'
+          [web]
+          ${{ secrets.SSH_HOST }} ansible_port=${{ secrets.SSH_PORT || 22 }} ansible_user=${{ secrets.SSH_USER || 'deploy' }}
+          EOF
+
+      - name: Prepare extra vars (optional)
+        run: |
+          : "Write only the vars you want to override"
+          cat > infra/ansible/extra_vars.yml << 'EOF'
+          server_name: "${{ secrets.SERVER_NAME }}"
+          branch: "main"
+          db_name: "${{ secrets.DB_NAME }}"
+          db_user: "${{ secrets.DB_USER }}"
+          db_password: "${{ secrets.DB_PASSWORD }}"
+          reverb_host: "${{ secrets.REVERB_HOST || '127.0.0.1' }}"
+          reverb_port: ${{ secrets.REVERB_PORT || 8080 }}
+          queue_conn: "${{ secrets.QUEUE_CONN || 'redis' }}"
+          EOF
+
+      - name: Run Ansible playbook
+        run: |
+          set -euo pipefail
+          # Show Ansible version for debugging
+          ansible --version
+          # Run deploy
+          ansible-playbook -i infra/ansible/inventory.ci.ini infra/ansible/site.yml \
+            -e @infra/ansible/extra_vars.yml
