@@ -426,7 +426,20 @@
                                             @endif
                                         </div>
                                         <div>
-                                            <span class="font-medium text-base-content">{{ $permission->name }}</span>
+                                            @php
+                                                $permName = $permission->name;
+                                                [$act,$mod] = array_pad(explode(' ', $permName, 2), 2, '');
+                                                $actMap = ['create'=>'Buat','update'=>'Ubah','delete'=>'Hapus','view'=>'Lihat'];
+                                                $modMap = [
+                                                    'report' => 'Laporan',
+                                                    'audit' => 'Audit',
+                                                    'consumption' => 'Konsumsi',
+                                                    'maintenance' => 'Pemeliharaan',
+                                                    'agenda' => 'Agenda',
+                                                ];
+                                                $label = trim(($actMap[$act] ?? ucfirst($act)).' '.($modMap[$mod] ?? ucfirst(str_replace('_',' ', $mod))));
+                                            @endphp
+                                            <span class="font-medium text-base-content">{{ $label ?: $permission->name }}</span>
                                             <p class="text-xs text-base-content/60 mt-0.5">
                                                 @if(str_contains($permission->name, 'create'))
                                                     Membuat data atau konten baru
@@ -638,7 +651,20 @@
                                             @endif
                                         </div>
                                         <div>
-                                            <span class="font-medium text-base-content">{{ $permission->name }}</span>
+                                            @php
+                                                $permName = $permission->name;
+                                                [$act,$mod] = array_pad(explode(' ', $permName, 2), 2, '');
+                                                $actMap = ['create'=>'Buat','update'=>'Ubah','delete'=>'Hapus','view'=>'Lihat'];
+                                                $modMap = [
+                                                    'report' => 'Laporan',
+                                                    'audit' => 'Audit',
+                                                    'consumption' => 'Konsumsi',
+                                                    'maintenance' => 'Pemeliharaan',
+                                                    'agenda' => 'Agenda',
+                                                ];
+                                                $label = trim(($actMap[$act] ?? ucfirst($act)).' '.($modMap[$mod] ?? ucfirst(str_replace('_',' ', $mod))));
+                                            @endphp
+                                            <span class="font-medium text-base-content">{{ $label ?: $permission->name }}</span>
                                             <p class="text-xs text-base-content/60 mt-0.5">
                                                 @if(str_contains($permission->name, 'create'))
                                                     Membuat data atau konten baru
