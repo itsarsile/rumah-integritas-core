@@ -7,7 +7,7 @@
         "dev": "vite"
     },
   "devDependencies": {
-    "@glidejs/glide": "^3.6.0",
+    "swiper": "^11.1.9",
     "@tailwindcss/vite": "^4.1.12",
     "axios": "^1.11.0",
     "concurrently": "^9.0.1",

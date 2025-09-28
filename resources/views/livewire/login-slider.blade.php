@@ -7,15 +7,14 @@
     @if ($slides->isNotEmpty())
         @php $total = $slides->count(); @endphp
 
-        <div class="glide max-w-4xl rounded-xl overflow-hidden shadow-xl">
-            <div class="glide__track" data-glide-el="track">
-                <ul class="glide__slides">
+        <div class="swiper max-w-4xl rounded-xl overflow-hidden shadow-xl">
+            <div class="swiper-wrapper">
                     @foreach ($slides as $index => $slide)
                         @php
                             $isExternal = Str::startsWith($slide->image_path, ['http://', 'https://']);
                             $imageUrl = $isExternal ? $slide->image_path : Storage::disk('public')->url($slide->image_path);
                         @endphp
-                        <li class="glide__slide max-w-4xl relative">
+                        <div class="swiper-slide max-w-4xl relative">
                             <img src="{{ $imageUrl }}" class="w-full h-[512px] object-cover bg-neutral-400" alt="Slide {{ $slide->title ?? $index + 1 }}" />
 
                             @if ($slide->title || $slide->subtitle || $slide->description || ($slide->button_text && $slide->button_url))
@@ -34,22 +33,15 @@
                                     @endif
                                 </div>
                             @endif
-                        </li>
+                        </div>
                     @endforeach
-                </ul>
             </div>
-
+            
             @if ($total > 1)
-                <div class="glide__arrows" data-glide-el="controls">
-                    <button class="glide__arrow glide__arrow--left btn btn-circle btn-sm bg-white/80 border-none text-base-content hover:bg-primary hover:text-primary-content" data-glide-dir="<">❮</button>
-                    <button class="glide__arrow glide__arrow--right btn btn-circle btn-sm bg-white/80 border-none text-base-content hover:bg-primary hover:text-primary-content" data-glide-dir=">">❯</button>
-                </div>
+                <button class="swiper-button-prev btn-sm border-none text-base-content"></button>
+                <button class="swiper-button-next btn-sm border-none text-base-content"></button>
 
-                <div class="glide__bullets flex justify-center gap-2 mt-4" data-glide-el="controls[nav]">
-                    @foreach ($slides as $index => $slide)
-                        <button class="glide__bullet w-3 h-3 rounded-full bg-base-300" data-glide-dir="={{ $index }}" aria-label="Go to slide {{ $index + 1 }}"></button>
-                    @endforeach
-                </div>
+                <div class="swiper-pagination flex justify-center gap-2 mt-4"></div>
             @endif
         </div>
     @else

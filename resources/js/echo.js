@@ -19,5 +19,5 @@ window.Echo = new Echo({
     forceTLS: scheme === 'https',
     enabledTransports: ['ws', 'wss'],
     // If you configure a custom server path in Nginx, expose it via Vite and pass as wsPath
-    // wsPath: import.meta.env.VITE_REVERB_PATH || undefined,
+    wsPath: import.meta.env.VITE_REVERB_PATH || undefined,
 });

@@ -1,39 +1,53 @@
 import './bootstrap';
 
-// Glide.js for login slider (bundled via Vite)
-import Glide from '@glidejs/glide';
-import '@glidejs/glide/dist/css/glide.core.min.css';
-import '@glidejs/glide/dist/css/glide.theme.min.css';
+// Swiper.js for login slider (bundled via Vite)
+import Swiper from 'swiper';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
-function initGlideSliders() {
-  const sliders = document.querySelectorAll('.glide');
+function initSwiperSliders() {
+  const sliders = document.querySelectorAll('.swiper');
   sliders.forEach((el) => {
-    if (el._glideInstance) return; // already initialized
+    if (el._swiperInstance) return; // already initialized
 
-    const slidesCount = el.querySelectorAll('.glide__slides > .glide__slide').length;
+    const slidesCount = el.querySelectorAll('.swiper-wrapper > .swiper-slide').length;
     const hasMultiple = slidesCount > 1;
 
-    const options = {
-      type: 'carousel',
-      perView: 1,
-      gap: 0,
-      animationDuration: 600,
-      autoplay: hasMultiple ? 4000 : false,
-      hoverpause: true,
-    };
+    const instance = new Swiper(el, {
+      modules: [Navigation, Pagination, Autoplay],
+      slidesPerView: 1,
+      spaceBetween: 0,
+      speed: 600,
+      loop: hasMultiple,
+      autoplay: hasMultiple
+        ? { delay: 4000, disableOnInteraction: false, pauseOnMouseEnter: true }
+        : false,
+      navigation: hasMultiple
+        ? {
+            nextEl: el.querySelector('.swiper-button-next'),
+            prevEl: el.querySelector('.swiper-button-prev'),
+          }
+        : false,
+      pagination: hasMultiple
+        ? {
+            el: el.querySelector('.swiper-pagination'),
+            clickable: true,
+          }
+        : false,
+    });
 
-    const instance = new Glide(el, options);
-    instance.mount();
-    el._glideInstance = instance;
+    el._swiperInstance = instance;
   });
 }
 
-document.addEventListener('DOMContentLoaded', initGlideSliders);
-window.addEventListener('load', initGlideSliders);
+document.addEventListener('DOMContentLoaded', initSwiperSliders);
+window.addEventListener('load', initSwiperSliders);
 
 if (window.Livewire) {
   window.addEventListener('livewire:load', () => {
-    initGlideSliders();
-    window.Livewire.hook('message.processed', () => initGlideSliders());
+    initSwiperSliders();
+    window.Livewire.hook('message.processed', () => initSwiperSliders());
   });
 }
