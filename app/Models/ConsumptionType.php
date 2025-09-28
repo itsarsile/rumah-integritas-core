@@ -6,5 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ConsumptionType extends Model
 {
-    //
+    protected $fillable = [
+        'name', 'code'
+    ];
 }

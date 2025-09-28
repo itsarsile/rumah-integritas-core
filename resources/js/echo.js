@@ -1,3 +1,22 @@
+// Provide a minimal stub so Livewire doesn't warn if Echo loads late
+if (typeof window !== 'undefined' && !window.Echo) {
+  const chain = {
+    listen() { return this; },
+    listenForWhisper() { return this; },
+    notification() { return this; },
+    stopListening() { return this; },
+    whisper() { return this; },
+    here() { return this; },
+    joining() { return this; },
+    leaving() { return this; },
+  };
+  window.Echo = {
+    channel() { return chain; },
+    private() { return chain; },
+    join() { return chain; },
+  };
+}
+
 (() => {
   const safeInit = async () => {
     try {

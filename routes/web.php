@@ -80,6 +80,15 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::get('/appearance/login-slider', LoginSliderManagement::class)
         ->name('dashboard.login-slider');
 
+    // Master Data
+    Route::prefix('/master-data')->group(function () {
+        Route::get('/regions', \App\Livewire\Admin\MasterData\Regions::class)->name('dashboard.master-data.regions');
+        Route::get('/divisions', \App\Livewire\Admin\MasterData\Divisions::class)->name('dashboard.master-data.divisions');
+        Route::get('/consumption-types', \App\Livewire\Admin\MasterData\ConsumptionTypes::class)->name('dashboard.master-data.consumption-types');
+        Route::get('/asset-types', \App\Livewire\Admin\MasterData\AssetTypes::class)->name('dashboard.master-data.asset-types');
+        Route::get('/organizations', \App\Livewire\Admin\MasterData\Organizations::class)->name('dashboard.master-data.organizations');
+    });
+
     Route::prefix('audit')->group(function () {
         Route::get("/", AuditMaster::class)->name('dashboard.audit.master');
 
