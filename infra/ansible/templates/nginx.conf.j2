@@ -1,6 +1,7 @@
 server {
     listen 80;
-    server_name {{ server_name }};
+    # Serve both the configured domain and catch-all for direct IP access
+    server_name _ {{ server_name }};
     root {{ app_root }}/public;
 
     index index.php;

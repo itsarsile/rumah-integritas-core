@@ -27,6 +27,14 @@ class ChatRoom extends Component
     public $uploadProgress = 0;
     public $uploadError = null;
 
+    // Ensure Echo subscriptions are registered even if attribute processing order changes
+    protected $listeners = [
+        'echo-presence:presence-chat.{chatRoomId},here' => 'updateOnlineUsersHere',
+        'echo-presence:presence-chat.{chatRoomId},joining' => 'updateOnlineUsersJoining',
+        'echo-presence:presence-chat.{chatRoomId},leaving' => 'updateOnlineUsersLeaving',
+        'echo-presence:presence-chat.{chatRoomId},.message.sent' => 'messageReceived',
+    ];
+
 
     public function mount($id = null)
     {

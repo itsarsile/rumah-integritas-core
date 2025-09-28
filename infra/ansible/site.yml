@@ -10,7 +10,7 @@
     repo_url: "https://github.com/itsarsile/rumah-integritas-core.git"
     branch: "main"
     php_version: "8.4"
-    server_name: "example.com"
+    server_name: "103.94.239.11"
     reverb_host: "127.0.0.1"
     reverb_port: 8080
     queue_conn: "redis"
