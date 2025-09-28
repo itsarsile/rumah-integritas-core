@@ -2,7 +2,7 @@
 <div class="card bg-white w-full border border-base-200 rounded-2xl">
     <div class="p-6 border-b border-base-200">
         <div class="card-title">
-            Sistem Audit & Pengawasan
+            {{ $title ?? 'Data' }}
         </div>
     </div>      <!-- Header Controls -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4">

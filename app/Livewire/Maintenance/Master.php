@@ -12,6 +12,7 @@ class Master extends DataTable
 {
     public function mount()
     {
+        $this->title = 'Manajemen Pemeliharaan';
         $this->model = MaintenanceReports::class;
         $this->relationships = ['images', 'creator', 'divisions'];
 

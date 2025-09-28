@@ -12,6 +12,7 @@ class Master extends DataTable
 {
     public function mount()
     {
+        $this->title = 'Manajemen Agenda';
         $this->model = AgendaReports::class;
         $this->relationships = ['personInCharge', 'creator'];
 

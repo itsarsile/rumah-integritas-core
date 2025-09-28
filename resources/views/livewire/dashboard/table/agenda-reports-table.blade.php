@@ -16,13 +16,13 @@
                 $statusLabel = match ($item->status) {
                     'pending' => 'Menunggu',
                     'rejected' => 'Ditolak',
-                    'accepted' => 'Disetujui',
+                    'approved' => 'Disetujui',
                     default => 'Tidak diketahui',
                 };
                 $statusClass = match ($item->status) {
                     'pending' => 'bg-yellow-100 border border-yellow-200 text-yellow-800',
                     'rejected' => 'bg-red-100 border border-red-200 text-red-800',
-                    'accepted' => 'bg-green-100 border border-green-200 text-green-800',
+                    'approved' => 'bg-green-100 border border-green-200 text-green-800',
                     default => 'bg-gray-100 border border-gray-200 text-gray-800',
                 };
                 $description = $item->description ?? $item->location ?? '-';

@@ -3,37 +3,63 @@
 namespace App\Livewire\Admin\MasterData;
 
 use App\Models\Regions as RegionModel;
-use Livewire\Attributes\Validate;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
 class Regions extends Component
 {
-    #[Validate('required|string|min:2|max:100')]
     public string $name = '';
-
-    #[Validate('required|string|min:2|max:10|unique:regions,code')]
     public string $code = '';
-
-    #[Validate('required|in:province,city,district,village')]
     public string $type = 'city';
-
-    #[Validate('nullable|string|max:10')]
     public ?string $postal_code = null;
+    public ?int $editingId = null;
+
+    protected function rules(): array
+    {
+        $unique = 'unique:regions,code' . ($this->editingId ? ',' . $this->editingId : '');
+        return [
+            'name' => 'required|string|min:2|max:100',
+            'code' => 'required|string|min:2|max:10|' . $unique,
+            'type' => 'required|in:province,city,district,village',
+            'postal_code' => 'nullable|string|max:10',
+        ];
+    }
 
     public function save()
     {
         $data = $this->validate();
-        RegionModel::create($data);
-        session()->flash('success', 'Region created');
-        $this->reset(['name','code','type','postal_code']);
-        $this->type = 'city';
-        $this->dispatch('region-created');
+        if ($this->editingId) {
+            RegionModel::findOrFail($this->editingId)->update($data);
+            session()->flash('success', 'Wilayah berhasil diperbarui');
+        } else {
+            RegionModel::create($data);
+            session()->flash('success', 'Wilayah berhasil dibuat');
+        }
+        $this->cancelEdit();
+        $this->dispatch('region-saved');
     }
 
+    public function edit(int $id): void
+    {
+        $r = RegionModel::findOrFail($id);
+        $this->editingId = $r->id;
+        $this->name = (string) $r->name;
+        $this->code = (string) $r->code;
+        $this->type = (string) $r->type;
+        $this->postal_code = $r->postal_code;
+    }
+
+    public function cancelEdit(): void
+    {
+        $this->reset(['name','code','type','postal_code','editingId']);
+        $this->type = 'city';
+    }
+
+    #[Title("Master Data - Wilayah")]
     public function render()
     {
         return view('livewire.admin.master-data.regions', [
-            'recent' => RegionModel::latest()->limit(10)->get(),
+            'rows' => RegionModel::orderBy('name')->paginate(10),
         ]);
     }
 }

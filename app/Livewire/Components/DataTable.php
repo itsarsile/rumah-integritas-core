@@ -11,6 +11,7 @@ class DataTable extends Component
     use WithPagination;
 
     // Public properties that can be set from parent component
+    public $title = null; // Card title shown above the table
     public $model;
     public $columns = [];
     public $searchableColumns = [];
@@ -185,6 +186,7 @@ class DataTable extends Component
     {
         return view('livewire.components.data-table', [
             'rows' => $this->rows,
+            'title' => $this->title,
             'sortableColumns' => $this->sortableColumns,
             'filterableColumns' => $this->filterableColumns,
             'showFilters' => $this->showFilters,

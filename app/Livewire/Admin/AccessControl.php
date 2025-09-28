@@ -9,7 +9,7 @@ use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 #[Layout('layouts.app')]
-#[Title('RBAC - Access Control')]
+#[Title('RBAC - Kontrol Akses')]
 class AccessControl extends Component
 {
     public array $modules = [
@@ -17,6 +17,22 @@ class AccessControl extends Component
         'maintenance' => ['view', 'create', 'update', 'approve', 'reject'],
         'consumption' => ['view', 'create', 'update', 'approve', 'reject'],
         'agenda' => ['view', 'create', 'update', 'approve', 'reject'],
+    ];
+
+    // Label terjemahan untuk tampilan (nama permission tetap bahasa Inggris)
+    public array $actionLabels = [
+        'view' => 'Lihat',
+        'create' => 'Buat',
+        'update' => 'Ubah',
+        'approve' => 'Setujui',
+        'reject' => 'Tolak',
+    ];
+
+    public array $moduleLabels = [
+        'audit' => 'Audit',
+        'maintenance' => 'Pemeliharaan',
+        'consumption' => 'Konsumsi',
+        'agenda' => 'Agenda',
     ];
 
     public $roles; // collection
@@ -96,7 +112,8 @@ class AccessControl extends Component
         $final = array_values(array_unique(array_merge($keep, $selected)));
         $role->syncPermissions($final);
 
-        session()->flash('message', 'Permissions updated for role: ' . $role->name);
+        session()->flash('success', 'Izin diperbarui untuk role: ' . $role->name);
+        session()->flash('message', 'Izin diperbarui untuk role: ' . $role->name);
     }
 
     public function render()
@@ -104,4 +121,3 @@ class AccessControl extends Component
         return view('livewire.admin.access-control');
     }
 }
-

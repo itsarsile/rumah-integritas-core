@@ -1,24 +1,22 @@
 <div class="card bg-white w-full border border-base-200 rounded-2xl">
     <div class="p-6 border-b border-base-200">
-        <div class="card-title">
-            Manajemen Role
-        </div>
-        <span class="text-sm font-light">Daftar semua role</span>
+        <div class="card-title">Manajemen Peran</div>
+        <span class="text-sm font-light">Daftar semua peran</span>
     </div>      
 
     <div class="p-4 border-b border-base-200">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="border border-base-200 rounded-2xl p-4 space-y-4">
-                <div class="stat-title">Total Role</div>
+                <div class="stat-title">Total Peran</div>
                 <div class="flex items-center justify-between text-primary">
                     <p class="text-4xl font-medium">{{ $totalRoles }}</p>               
                     <x-feathericon-shield class="w-8 h-8 text-primary"/>
                 </div>
-                <div class="stat-desc">Active roles in the system</div>
+                <div class="stat-desc">Peran aktif di sistem</div>
             </div>
     
             <div class="border border-base-200 rounded-2xl p-4 space-y-4">
-                <div class="stat-title">Total Permissions</div>
+                <div class="stat-title">Total Izin</div>
                 <div class="flex items-center justify-between text-success">
                     <p class="text-4xl font-medium">{{ $totalPermissions }}</p>               
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -26,7 +24,7 @@
                             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>            
                 </div>
-                <div class="stat-desc">Available permissions</div>
+                <div class="stat-desc">Izin tersedia</div>
             </div>
         </div>
     </div>
@@ -39,7 +37,7 @@
                 <div class="form-control relative w-72">
                     <input 
                         type="text" 
-                        placeholder="Search users..." 
+                        placeholder="Cari peran..." 
                         class="input input-bordered flex-1 border border-base-200 bg-white pr-6" 
                         wire:model.live="search"
                     >
@@ -52,7 +50,7 @@
                     {{-- Guard Filter (if multiple guards are used) --}}
                     <div class="form-control">
                         <select class="select select-bordered border border-base-200 bg-white" wire:model.live="guardFilter">
-                            <option value="">All Guards</option>
+                            <option value="">Semua Guard</option>
                             <option value="web">Web</option>
                             <option value="api">API</option>
                         </select>
@@ -61,10 +59,10 @@
                     {{-- Per Page --}}
                     <div class="form-control">
                         <select class="select select-bordered border border-base-200 bg-white" wire:model.live="perPage">
-                            <option value="10">10 per page</option>
-                            <option value="25">25 per page</option>
-                            <option value="50">50 per page</option>
-                            <option value="100">100 per page</option>
+                            <option value="10">10 / halaman</option>
+                            <option value="25">25 / halaman</option>
+                            <option value="50">50 / halaman</option>
+                            <option value="100">100 / halaman</option>
                         </select>
                     </div>
 
@@ -72,7 +70,7 @@
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                         </svg>
-                        Add New Role
+                        Tambah Peran
                     </button>
                 </div>
             </div>
@@ -179,7 +177,7 @@
                                                     </a></li> --}}
                                                 <li><a wire:click="openMenuConfigModal({{ $role->id }})">
                                                         <x-feathericon-menu class="w-4 h-4" />
-                                                        Configure Menu
+                                                        Konfigurasi Menu
                                                     </a></li>
                                                 <li><a wire:click="editRole({{ $role->id }})">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor"
@@ -189,7 +187,7 @@
                                                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
                                                             </path>
                                                         </svg>
-                                                        Edit Role
+                                                        Ubah Peran
                                                     </a></li>
                                                 <div class="divider my-1"></div>
                                                 <li><a wire:click="deleteRole({{ $role->id }})" class="text-error">
@@ -200,7 +198,7 @@
                                                                 d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
                                                             </path>
                                                         </svg>
-                                                        Delete
+                                                        Hapus
                                                     </a></li>
                                             </ul>
                                         </div>
@@ -217,12 +215,12 @@
                                                 </path>
                                             </svg>
                                             <div class="text-center">
-                                                <h3 class="text-lg font-semibold text-base-content">No roles found</h3>
-                                                <p class="text-base-content/60">Try adjusting your search or filter criteria</p>
+                                                <h3 class="text-lg font-semibold text-base-content">Tidak ada peran</h3>
+                                                <p class="text-base-content/60">Coba ubah pencarian atau filter</p>
                                             </div>
                                             @if($search || $guardFilter)
                                                 <button wire:click="clearFilters" class="btn btn-outline btn-sm">
-                                                    Clear Filters
+                                                    Hapus Filter
                                                 </button>
                                             @endif
                                         </div>
@@ -249,13 +247,13 @@
             <div class="card bg-base-100 shadow-lg">
                 <div class="card-body">
                     <div class="flex items-center gap-4">
-                        <span class="text-sm">{{ count($selectedRoles) }} role(s) selected</span>
+                        <span class="text-sm">{{ count($selectedRoles) }} peran dipilih</span>
                         <div class="flex gap-2">
                             <button wire:click="bulkDelete" class="btn btn-error btn-sm">
-                                Delete
+                                Hapus
                             </button>
                             <button wire:click="clearSelection" class="btn btn-ghost btn-sm">
-                                Clear
+                                Bersihkan
                             </button>
                         </div>
                     </div>
@@ -280,7 +278,7 @@
                         </svg>
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold text-base-content">Create Role</h3>
+                        <h3 class="text-xl font-bold text-base-content">Buat Peran</h3>
                         <p class="text-sm text-base-content/70">Create new role permissions and settings</p>
                     </div>
                 </div>
@@ -298,7 +296,7 @@
                 <fieldset class="fieldset">
                     <legend class="fieldset-legend">
                         <span class="label-text font-semibold text-base-content flex items-center gap-2">
-                            Role Name
+                            Nama Peran
                         </span>
                     </legend>
                     <input type="text" placeholder="Enter a descriptive role name..."
@@ -322,9 +320,9 @@
                 <fieldset class="fieldset">
                     <legend class="fieldset-legend">
                         <span class="label-text font-semibold text-base-content flex items-center gap-2">
-                            Guard Name
+                            Nama Guard
                         </span>
-                        <span class="label-text-alt text-base-content/60">Security context</span>
+                        <span class="label-text-alt text-base-content/60">Konteks keamanan</span>
                     </legend>
                     <select
                         class="select select-bordered bg-white border-1 focus:border-secondary focus:outline-none transition-all duration-200 hover:border-secondary/50 w-full"
@@ -359,9 +357,9 @@
                                     d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z">
                                 </path>
                             </svg>
-                            Permissions
+                            Izin
                         </span>
-                        <span class="label-text-alt text-base-content/60">Select role capabilities</span>
+                        <span class="label-text-alt text-base-content/60">Pilih kemampuan peran</span>
                     </label>
 
                     <!-- Enhanced permissions container -->
@@ -373,7 +371,7 @@
                                     @if($loop->first || $permission->group !== $previousGroup)
                                         @if(str_contains($permission->name, 'report'))
                                             <div class="text-sm font-semibold text-base-content/70 mt-4 mb-2">
-                                                Report Module
+                                                Modul Laporan
                                             </div>
                                         @else
                                             <div class="text-sm font-semibold text-base-content/70 mt-4 mb-2">
@@ -431,13 +429,13 @@
                                             <span class="font-medium text-base-content">{{ $permission->name }}</span>
                                             <p class="text-xs text-base-content/60 mt-0.5">
                                                 @if(str_contains($permission->name, 'create'))
-                                                    Create new resources and content
+                                                    Membuat data atau konten baru
                                                 @elseif(str_contains($permission->name, 'update'))
-                                                    Modify existing data and settings
+                                                    Mengubah data dan pengaturan
                                                 @elseif(str_contains($permission->name, 'delete'))
-                                                    Remove data permanently
+                                                    Menghapus data secara permanen
                                                 @elseif(str_contains($permission->name, 'view'))
-                                                    Read and access information
+                                                    Membaca dan mengakses informasi
                                                 @else
                                                     Manage {{ $permission->name }} operations
                                                 @endif
@@ -472,12 +470,12 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                         </svg>
-                        Create Role
+                        Buat Peran
                     </button>
                     <button type="button"
                         class="btn btn-outline px-8 hover:bg-base-200 transition-all duration-200"
                         wire:click="closeCreateModal">
-                        Cancel
+                        Batal
                     </button>
                 </div>
             </form>
@@ -503,7 +501,7 @@
                         </svg>
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold text-base-content">Edit Role</h3>
+                        <h3 class="text-xl font-bold text-base-content">Ubah Peran</h3>
                         <p class="text-sm text-base-content/70">Modify permissions and settings</p>
                     </div>
                 </div>
@@ -521,7 +519,7 @@
                 <fieldset class="fieldset">
                     <legend class="fieldset-legend">
                         <span class="label-text font-semibold text-base-content flex items-center gap-2">
-                            Role Name
+                            Nama Peran
                         </span>
                     </legend>
                     <input type="text" placeholder="Enter role name..."
@@ -550,9 +548,9 @@
                                     d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
                                 </path>
                             </svg>
-                            Guard Name
+                            Nama Guard
                         </span>
-                        <span class="label-text-alt text-base-content/60">Security context</span>
+                        <span class="label-text-alt text-base-content/60">Konteks keamanan</span>
                     </legend>
                     <select
                         class="w-full select select-bordered bg-white border-1 focus:border-info focus:outline-none transition-all duration-200 hover:border-info/50"
@@ -587,7 +585,7 @@
                                     d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z">
                                 </path>
                             </svg>
-                            Permissions
+                            Izin
                         </span>
                         <span class="label-text-alt text-base-content/60">Modify role capabilities</span>
                     </label>
@@ -643,13 +641,13 @@
                                             <span class="font-medium text-base-content">{{ $permission->name }}</span>
                                             <p class="text-xs text-base-content/60 mt-0.5">
                                                 @if(str_contains($permission->name, 'create'))
-                                                    Create new resources and content
+                                                    Membuat data atau konten baru
                                                 @elseif(str_contains($permission->name, 'update'))
-                                                    Modify existing data and settings
+                                                    Mengubah data dan pengaturan
                                                 @elseif(str_contains($permission->name, 'delete'))
-                                                    Remove data permanently
+                                                    Menghapus data secara permanen
                                                 @elseif(str_contains($permission->name, 'view'))
-                                                    Read and access information
+                                                    Membaca dan mengakses informasi
                                                 @else
                                                     Manage {{ $permission->name }} operations
                                                 @endif
@@ -685,12 +683,12 @@
                                 d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
                             </path>
                         </svg>
-                        Update Role
+                        Perbarui Peran
                     </button>
                     <button type="button"
                         class="btn btn-outline px-8 hover:bg-base-200 transition-all duration-200"
                         wire:click="closeEditModal">
-                        Cancel
+                        Batal
                     </button>
                 </div>
             </form>
@@ -740,11 +738,11 @@
     <div class="modal" id="deleteRoleModal" x-data="{ open: @entangle('showDeleteModal') }"
         :class="{ 'modal-open': open }" x-cloak>
         <div class="modal-box">
-            <h3 class="font-bold text-lg">Confirm Deletion</h3>
-            <p class="py-4">Are you sure you want to delete this role? This action cannot be undone.</p>
+            <h3 class="font-bold text-lg">Konfirmasi Hapus</h3>
+            <p class="py-4">Yakin ingin menghapus peran ini? Tindakan ini tidak bisa dibatalkan.</p>
             <div class="modal-action">
-                <button class="btn btn-error" wire:click="deleteRole">Delete</button>
-                <button class="btn btn-ghost" wire:click="cancelDelete">Cancel</button>
+                <button class="btn btn-error" wire:click="deleteRole">Hapus</button>
+                <button class="btn btn-ghost" wire:click="cancelDelete">Batal</button>
             </div>
         </div>
     </div>

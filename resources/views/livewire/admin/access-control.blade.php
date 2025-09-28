@@ -8,7 +8,7 @@
         >
             <div class="alert alert-success flex items-center gap-2 transition duration-500">
                 <i class="fas fa-check"></i>
-                <span>{{ session('message') }}</span>
+                <span>{{ session('success') }}</span>
             </div>
         </div>    
     @endif
@@ -38,13 +38,13 @@
                 @foreach($modules as $module => $actions)
                     <div class="card bg-base-100 border border-base-200">
                         <div class="card-body">
-                            <div class="font-semibold mb-2 capitalize">{{ $module }}</div>
+                            <div class="font-semibold mb-2">{{ $moduleLabels[$module] ?? ucfirst($module) }}</div>
                             <div class="space-y-2">
                                 @foreach($actions as $action)
                                     @php $key = $action.' '.$module; @endphp
                                     <label class="flex items-center gap-2">
                                         <input type="checkbox" class="toggle toggle-primary" wire:model.live="grants.{{ $key }}">
-                                        <span class="capitalize">{{ $action }}</span>
+                                        <span>{{ $actionLabels[$action] ?? ucfirst($action) }}</span>
                                     </label>
                                 @endforeach
                             </div>
@@ -55,4 +55,3 @@
         </div>
     </div>
 </div>
-

@@ -14,6 +14,7 @@ class Master extends DataTable
 {
     public function mount()
     {
+        $this->title = 'Manajemen Konsumsi';
         $this->model = ConsumptionReport::class;
         $this->relationships = ['creator', 'divisions', 'consumptionType'];
 

@@ -13,6 +13,7 @@ class Master extends DataTable
 {
     public function mount()
     {
+        $this->title = 'Sistem Audit dan Pengawasan';
         $this->model = AuditReports::class;
         $this->relationships = ['creator'];
 

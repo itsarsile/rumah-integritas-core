@@ -4,50 +4,76 @@ namespace App\Livewire\Admin\MasterData;
 
 use App\Models\RegionalGovernmentOrganization as Org;
 use App\Models\Regions;
-use Livewire\Attributes\Validate;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
 class Organizations extends Component
 {
-    #[Validate('required|string|min:2|max:150')]
     public string $name = '';
-
-    #[Validate('required|string|min:2|max:20|unique:regional_government_organizations,code')]
     public string $code = '';
-
-    #[Validate('nullable|string|max:500')]
     public ?string $address = null;
-
-    #[Validate('nullable|string|max:50')]
     public ?string $phone = null;
-
-    #[Validate('nullable|email|max:150')]
     public ?string $email = null;
-
-    #[Validate('nullable|url|max:150')]
     public ?string $website = null;
-
-    #[Validate('required|in:active,inactive')]
     public string $status = 'active';
-
-    #[Validate('required|integer|exists:regions,id')]
     public $region_id = null;
+    public ?int $editingId = null;
+
+    protected function rules(): array
+    {
+        $unique = 'unique:regional_government_organizations,code' . ($this->editingId ? ',' . $this->editingId : '');
+        return [
+            'name' => 'required|string|min:2|max:150',
+            'code' => 'required|string|min:2|max:20|' . $unique,
+            'address' => 'nullable|string|max:500',
+            'phone' => 'nullable|string|max:50',
+            'email' => 'nullable|email|max:150',
+            'website' => 'nullable|url|max:150',
+            'status' => 'required|in:active,inactive',
+            'region_id' => 'required|integer|exists:regions,id',
+        ];
+    }
 
     public function save()
     {
         $data = $this->validate();
-        Org::create($data);
-        session()->flash('success', 'Organization created');
-        $this->reset(['name','code','address','phone','email','website','status','region_id']);
-        $this->status = 'active';
-        $this->dispatch('organization-created');
+        if ($this->editingId) {
+            Org::findOrFail($this->editingId)->update($data);
+            session()->flash('success', 'Organisasi berhasil diperbarui');
+        } else {
+            Org::create($data);
+            session()->flash('success', 'Organisasi berhasil dibuat');
+        }
+        $this->cancelEdit();
+        $this->dispatch('organization-saved');
     }
 
+    public function edit(int $id): void
+    {
+        $row = Org::findOrFail($id);
+        $this->editingId = $row->id;
+        $this->name = (string) $row->name;
+        $this->code = (string) $row->code;
+        $this->address = $row->address;
+        $this->phone = $row->phone;
+        $this->email = $row->email;
+        $this->website = $row->website;
+        $this->status = (string) $row->status;
+        $this->region_id = $row->region_id;
+    }
+
+    public function cancelEdit(): void
+    {
+        $this->reset(['name','code','address','phone','email','website','status','region_id','editingId']);
+        $this->status = 'active';
+    }
+
+    #[Title("Master Data - OPD")]
     public function render()
     {
         return view('livewire.admin.master-data.organizations', [
             'regions' => Regions::orderBy('name')->get(),
-            'recent' => Org::with('regions')->latest()->limit(10)->get(),
+            'rows' => Org::with('regions')->orderBy('name')->paginate(10),
         ]);
     }
 }

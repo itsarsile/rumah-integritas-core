@@ -3,33 +3,59 @@
 namespace App\Livewire\Admin\MasterData;
 
 use App\Models\AssetType;
-use Livewire\Attributes\Validate;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
 class AssetTypes extends Component
 {
-    #[Validate('required|string|min:2|max:100')]
     public string $name = '';
-
-    #[Validate('required|string|min:2|max:20|unique:asset_types,code')]
     public string $code = '';
-
-    #[Validate('nullable|string|max:255')]
     public ?string $description = null;
+    public ?int $editingId = null;
+
+    protected function rules(): array
+    {
+        $unique = 'unique:asset_types,code' . ($this->editingId ? ',' . $this->editingId : '');
+        return [
+            'name' => 'required|string|min:2|max:100',
+            'code' => 'required|string|min:2|max:20|' . $unique,
+            'description' => 'nullable|string|max:255',
+        ];
+    }
 
     public function save()
     {
         $data = $this->validate();
-        AssetType::create($data);
-        session()->flash('success', 'Asset type created');
-        $this->reset(['name','code','description']);
-        $this->dispatch('asset-type-created');
+        if ($this->editingId) {
+            AssetType::findOrFail($this->editingId)->update($data);
+            session()->flash('success', 'Jenis aset berhasil diperbarui');
+        } else {
+            AssetType::create($data);
+            session()->flash('success', 'Jenis aset berhasil dibuat');
+        }
+        $this->cancelEdit();
+        $this->dispatch('asset-type-saved');
     }
 
+    public function edit(int $id): void
+    {
+        $row = AssetType::findOrFail($id);
+        $this->editingId = $row->id;
+        $this->name = (string) $row->name;
+        $this->code = (string) $row->code;
+        $this->description = $row->description;
+    }
+
+    public function cancelEdit(): void
+    {
+        $this->reset(['name','code','description','editingId']);
+    }
+
+    #[Title("Master Data - Jenis Peralatan")]
     public function render()
     {
         return view('livewire.admin.master-data.asset-types', [
-            'recent' => AssetType::latest()->limit(10)->get(),
+            'rows' => AssetType::orderBy('name')->paginate(10),
         ]);
     }
 }
