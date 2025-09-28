@@ -225,6 +225,12 @@
         chdir: "{{ app_root }}"
       become_user: "{{ app_user }}"
 
+    - name: Create storage symlink
+      command: php artisan storage:link --force
+      args:
+        chdir: "{{ app_root }}"
+      become_user: "{{ app_user }}"
+
     - name: Set recursive permissions on storage and cache
       file:
         path: "{{ item }}"
