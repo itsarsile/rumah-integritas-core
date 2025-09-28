@@ -1,0 +1,11 @@
+## Variables for the 'web' inventory group
+# If you use a different group name in inventory, ensure a matching file exists here.
+
+# Broadcasting driver (use 'reverb' to enable websockets, or 'log' to disable)
+broadcast_connection: log
+
+# Reverb credentials
+reverb_app_id: 772945
+reverb_app_key: "oef7zcgfvl53ypszf1fr"
+reverb_app_secret: "ao2dw83noga1zxzhi283"
+
