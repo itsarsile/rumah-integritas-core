@@ -22,18 +22,18 @@
                 </div>
                 @auth
                 <div class="drawer-side border-r bg-white border-base-200 lg:flex lg:flex-col lg:relative">
-                        <div>
-                                <div class="flex items-center gap-4 px-6 py-3">
-                                        <x-app.logo class="w-8" />
-                                        <h1 class="mt-2 font-semibold">
-                                                {{ config('app.name') }}
-                                        </h1>
-                                </div>
+                        <div class="flex items-center gap-4 px-6 py-3 fixed w-full max-w-xs z-10 bg-white">
+                                <x-app.logo class="w-8" />
+                                <h1 class="mt-2 font-semibold">
+                                        {{ config('app.name') }}
+                                </h1>
+                        </div>
+                        <div class="py-14">
                                 <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
                                 <!-- For menu section -->
                                 <livewire:menus />
                         </div>
-                        <div class="absolute bottom-0 w-full">
+                        <div class="fixed bg-white bottom-0 w-full lg:max-w-xs">
                                 <livewire:sidebar-user />
                         </div>
                         <!-- For avatar section -->
