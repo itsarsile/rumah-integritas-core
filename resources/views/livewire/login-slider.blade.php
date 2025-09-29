@@ -12,7 +12,10 @@
             @foreach ($slides as $index => $slide)
                 @php
                     $isExternal = Str::startsWith($slide->image_path, ['http://', 'https://']);
-                    $imageUrl = $isExternal ? $slide->image_path : Storage::disk('public')->url($slide->image_path);
+                    // Use a scheme-relative, same-origin path for local files so it works with both HTTP and HTTPS
+                    $imageUrl = $isExternal
+                        ? $slide->image_path
+                        : '/storage/' . ltrim($slide->image_path, '/');
                     $id = 'item' . ($index + 1);
                 @endphp
                 <div id="{{ $id }}" class="carousel-item w-full relative">
