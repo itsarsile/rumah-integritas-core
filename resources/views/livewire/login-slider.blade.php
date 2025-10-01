@@ -3,12 +3,12 @@
     use Illuminate\Support\Str;
 @endphp
 
-<div class="hidden lg:flex lg:flex-col lg:w-full">
+<div class="hidden lg:flex lg:flex-col lg:flex-1 lg:basis-1/2 lg:pr-4 lg:min-w-[28rem] lg:max-w-[40rem]">
     @if ($slides->isNotEmpty())
         @php $total = $slides->count(); @endphp
 
         <div class="relative w-full" data-carousel-scope data-carousel-interval="4000">
-        <div class="carousel w-full max-w-4xl rounded-xl overflow-hidden shadow-xl">
+        <div class="carousel w-full max-w-3xl min-w-[28rem] mx-auto rounded-xl overflow-hidden shadow-xl">
             @foreach ($slides as $index => $slide)
                 @php
                     $isExternal = Str::startsWith($slide->image_path, ['http://', 'https://']);
