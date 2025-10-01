@@ -18,8 +18,8 @@
                         : '/storage/' . ltrim($slide->image_path, '/');
                     $id = 'item' . ($index + 1);
                 @endphp
-                <div id="{{ $id }}" class="carousel-item w-full relative">
-                    <img src="{{ $imageUrl }}" class="w-full h-[800px] object-cover bg-neutral-400" alt="Slide {{ $slide->title ?? $index + 1 }}" />
+                <div id="{{ $id }}" class="carousel-item w-full relative aspect-square">
+                    <img src="{{ $imageUrl }}" class="absolute inset-0 w-full h-full object-cover bg-neutral-400" alt="Slide {{ $slide->title ?? $index + 1 }}" />
 
                     @if ($slide->title || $slide->subtitle || $slide->description || ($slide->button_text && $slide->button_url))
                         <div class="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-8 text-white space-y-3">
@@ -55,7 +55,9 @@
         </div>
     @else
         <div class="rounded-xl overflow-hidden shadow-xl">
-            <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80" class="w-full object-cover" alt="Placeholder slide">
+            <div class="relative aspect-square w-full">
+                <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80" class="absolute inset-0 w-full h-full object-cover" alt="Placeholder slide">
+            </div>
         </div>
     @endif
 </div>

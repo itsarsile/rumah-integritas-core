@@ -19,6 +19,7 @@ use App\Livewire\Admin\LoginSliderManagement;
 use App\Models\AuditReports;
 use App\Models\ChatMessage;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use App\Livewire\Logs as ActivityLogs;
 
 Route::get('/', function () {
@@ -109,7 +110,12 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
 
         Route::get('/files/{id}', function ($id) {
             $file = AuditReports::findOrFail($id);
-            return Storage::response($file->lhp_document_path);
+
+            if (empty($file->lhp_document_path) || !Storage::disk('local')->exists($file->lhp_document_path)) {
+                abort(404, 'file_not_found');
+            }
+
+            return Storage::disk('local')->response($file->lhp_document_path);
         })->name('audit.files');
     });
 

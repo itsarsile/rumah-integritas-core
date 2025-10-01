@@ -38,7 +38,7 @@ class Show extends Component
     {
         try {
             if ($this->audit->hasLhpDocument()) {
-                $filePath = 'app/private/' . $this->audit->lhp_document_path;
+                $filePath = $this->audit->lhp_document_path; // already relative to 'local' disk root
 
                 if (Storage::disk('local')->exists($filePath)) {
                     Storage::disk('local')->delete($filePath);
@@ -48,7 +48,7 @@ class Show extends Component
                     'lhp_document_name' => null,
                     'lhp_document_path' => null,
                     'lhp_document_size' => null,
-                    'lhp_document_type' => null,
+                    'lhp_document_mime_type' => null,
                 ]);
 
                 $this->audit->refresh();
@@ -79,7 +79,7 @@ class Show extends Component
 
         try {
             if ($this->audit->hasLhpDocument()) {
-                $oldFilePath = 'app/audit_reports/' . $this->audit->lhp_document_path;
+                $oldFilePath = $this->audit->lhp_document_path; // stored on 'local' disk
                 if (Storage::disk('local')->exists($oldFilePath)) {
                     Storage::disk('local')->delete($oldFilePath);
                 }
@@ -96,7 +96,7 @@ class Show extends Component
                 'lhp_document_name' => $originalName,
                 'lhp_document_path' => $filePath,
                 'lhp_document_size' => $this->newFile->getSize(),
-                'lhp_document_type' => $this->newFile->getMimeType(),
+                'lhp_document_mime_type' => $this->newFile->getMimeType(),
             ]);
 
             $this->audit->refresh();

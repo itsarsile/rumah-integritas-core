@@ -7,6 +7,8 @@
   vars:
     app_user: deploy
     app_root: /var/www/laravel
+    shared_root: /var/www/shared
+    shared_storage: "{{ shared_root }}/storage"
     repo_url: "https://github.com/itsarsile/rumah-integritas-core.git"
     branch: "main"
     php_version: "8.4"
@@ -156,12 +158,8 @@
         state: present
 
     # --- App directory ---
-    - name: Remove old repo if exists
-      file:
-        path: "{{ app_root }}"
-        state: absent
-
-    - name: Recreate app root
+    # Preserve existing application directory (keeps uploaded files under storage/)
+    - name: Ensure app root directory exists
       file:
         path: "{{ app_root }}"
         state: directory
@@ -170,13 +168,51 @@
         mode: "0755"
 
     # --- Git clone ---
-    - name: Deploy code (fresh clone)
+    - name: Deploy code (update in place)
       git:
         repo: "{{ repo_url }}"
         dest: "{{ app_root }}"
         version: "{{ branch }}"
         accept_hostkey: yes
+        update: yes
+        force: yes
       become_user: "{{ app_user }}"
+
+    # --- Shared storage symlink (preserve uploads) ---
+    - name: Ensure shared root exists
+      file:
+        path: "{{ shared_root }}"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        mode: "0755"
+
+    - name: Ensure shared storage exists
+      file:
+        path: "{{ shared_storage }}"
+        state: directory
+        owner: "{{ app_user }}"
+        group: www-data
+        mode: "0775"
+        recurse: yes
+
+    - name: Migrate existing app storage to shared (one-time)
+      shell: |
+        set -e
+        if [ ! -L "{{ app_root }}/storage" ] && [ -d "{{ app_root }}/storage" ]; then
+          shopt -s dotglob || true
+          mv "{{ app_root }}/storage"/* "{{ shared_storage }}/" 2>/dev/null || true
+          rmdir "{{ app_root }}/storage" 2>/dev/null || true
+        fi
+      args:
+        executable: /bin/bash
+
+    - name: Symlink app storage to shared
+      file:
+        src: "{{ shared_storage }}"
+        dest: "{{ app_root }}/storage"
+        state: link
+        force: yes
 
     # --- .env setup ---
     - name: Write .env from template
@@ -241,6 +277,7 @@
         recurse: yes
       loop:
         - "{{ app_root }}/storage"
+        - "{{ shared_storage }}"
         - "{{ app_root }}/bootstrap/cache"
 
     - name: Run migrations
