@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\User;
+use App\Models\Division;
 use App\Support\MenuTreeBuilder;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -48,6 +49,8 @@ class UserManagement extends Component
     public $selectedRoleId = null;
     public $userMenuSelections = [];
     public $menuTree = [];
+    public $division_id = null;
+    public $divisions;
 
     protected $paginationTheme = 'bootstrap';
 
@@ -71,6 +74,7 @@ class UserManagement extends Component
                 'exists:roles,id'
             ],
             'status' => 'required|in:active,inactive,pending,suspended',
+            'division_id' => 'nullable|integer|exists:divisions,id',
         ];
 
         // Password rules for creating new user
@@ -91,6 +95,7 @@ class UserManagement extends Component
         // Initialize component
         $this->roles = Role::where('guard_name', 'web')->get();
         $this->menuTree = MenuTreeBuilder::activeTree();
+        $this->divisions = Division::orderBy('name')->get();
     }
 
     public function updatedSearch()
@@ -225,6 +230,7 @@ class UserManagement extends Component
         $this->email = $user->email;
         $this->selectedRoleId = $user->roles()->pluck('id')->first();
         $this->status = $user->status ?? 'active';
+        $this->division_id = $user->division_id;
         $this->password = '';
         $this->password_confirmation = '';
         $this->showEditModal = true;
@@ -253,6 +259,7 @@ class UserManagement extends Component
         $this->role = 'user';
         $this->status = 'active';
         $this->editingUserId = null;
+        $this->division_id = null;
         $this->resetValidation();
     }
 
@@ -296,6 +303,7 @@ class UserManagement extends Component
             'email' => $this->email,
             'password' => Hash::make($this->password),
             'status' => $this->status,
+            'division_id' => $this->division_id ? (int) $this->division_id : null,
             'email_verified_at' => $this->status === 'active' ? now() : null,
         ];
 
@@ -326,6 +334,7 @@ class UserManagement extends Component
             'name' => $this->name,
             'email' => $this->email,
             'status' => $this->status,
+            'division_id' => $this->division_id ? (int) $this->division_id : null,
         ];
 
         if ($this->password) {

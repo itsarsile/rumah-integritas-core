@@ -26,6 +26,7 @@ class User extends Authenticatable
         'status',
         'avatar',
         'last_login_at',
+        'division_id',
     ];
 
     /**
@@ -164,5 +165,10 @@ class User extends Authenticatable
     public function menus()
     {
         return $this->belongsToMany(Menu::class, 'menu_user')->withTimestamps();
+    }
+
+    public function division()
+    {
+        return $this->belongsTo(Division::class, 'division_id');
     }
 }

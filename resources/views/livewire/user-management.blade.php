@@ -470,6 +470,27 @@
                     @enderror
                 </fieldset>
 
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">
+                        <span class="label-text font-semibold text-base-content flex items-center gap-2 text-sm">
+                            Division (optional)
+                        </span>
+                    </legend>
+                    <select
+                        class="select select-bordered bg-white border-1 focus:border-primary focus:outline-none transition-all duration-200 hover:border-primary/50 w-full"
+                        wire:model="division_id">
+                        <option value="">— No Division —</option>
+                        @foreach($divisions as $division)
+                            <option value="{{ $division->id }}">{{ $division->name }} ({{ $division->code }})</option>
+                        @endforeach
+                    </select>
+                    @error('division_id')
+                        <label class="label">
+                            <span class="label-text-alt text-error flex items-center gap-1">{{ $message }}</span>
+                        </label>
+                    @enderror
+                </fieldset>
+
                 <!-- Password Fields -->
                 <fieldset class="fieldset">
                     <legend class="fieldset-legend">
@@ -613,6 +634,26 @@
                         @endforeach
                     </select>
                     @error('role')
+                        <label class="label">
+                            <span class="label-text-alt text-error">{{ $message }}</span>
+                        </label>
+                    @enderror
+                </fieldset>
+
+                <!-- Division -->
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">
+                        <span class="label-text font-semibold text-base-content text-sm">Division (optional)</span>
+                    </legend>
+                    <select
+                        class="w-full select select-bordered bg-white border-1 focus:border-secondary hover:border-secondary/50"
+                        wire:model="division_id">
+                        <option value="">— No Division —</option>
+                        @foreach($divisions as $division)
+                            <option value="{{ $division->id }}">{{ $division->name }} ({{ $division->code }})</option>
+                        @endforeach
+                    </select>
+                    @error('division_id')
                         <label class="label">
                             <span class="label-text-alt text-error">{{ $message }}</span>
                         </label>

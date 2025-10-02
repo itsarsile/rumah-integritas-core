@@ -71,6 +71,6 @@ class Master extends DataTable
 
     public function render()
     {
-        return parent::render();
+        return view('livewire.consumption.master');
     }
 }

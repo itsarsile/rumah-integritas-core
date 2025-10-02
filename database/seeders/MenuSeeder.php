@@ -16,25 +16,27 @@ class MenuSeeder extends Seeder
         // All routes use named routes to be compatible with the menus component.
 
         // Root: Dashboard
-        $dashboardId = $this->upsertMenu('Dashboard', null, 'dashboard', 1);
+        $dashboardId = $this->upsertMenu('Dashboard', null, 'dashboard', 1, 'lucide-home');
 
         // Root: Sistem Audit & Pengawasan (klik ke halaman buat audit)
-        $sapId = $this->upsertMenu('Sistem Audit & Pengawasan', null, 'dashboard.audit.create', 2);
+        $sapId = $this->upsertMenu('Sistem Audit & Pengawasan', null, 'dashboard.audit.create', 2, 'lucide-shield');
 
         // Root: Sistem Administrasi Operasional (parent)
-        $saoId = $this->upsertMenu('Sistem Administrasi Operasional', null, null, 3);
+        $saoId = $this->upsertMenu('Sistem Administrasi Operasional', null, null, 3, 'lucide-settings-2');
 
         // Children under SAO (use create pages)
-        $this->upsertMenu('Manajemen Konsumsi', $saoId, 'dashboard.consumption.create', 1);
-        $this->upsertMenu('Manajemen Pemeliharaan', $saoId, 'dashboard.maintenance.create', 2);
-        $this->upsertMenu('Manajemen Agenda', $saoId, 'dashboard.agenda.create', 3);
+        $this->upsertMenu('Manajemen Konsumsi', $saoId, 'dashboard.consumption.create', 1, 'lucide-cup-soda');
+        $this->upsertMenu('Manajemen Pemeliharaan', $saoId, 'dashboard.maintenance.create', 2, 'lucide-wrench');
+        $this->upsertMenu('Manajemen Agenda', $saoId, 'dashboard.agenda.create', 3, 'lucide-calendar');
 
         // Root: Percakapan
-        $chatId = $this->upsertMenu('Percakapan', null, 'dashboard.chat', 4);
+        $chatId = $this->upsertMenu('Percakapan', null, 'dashboard.chat', 4, 'lucide-message-circle');
+        // Root: Kalender Divisi
+        $calendarId = $this->upsertMenu('Kalender Divisi', null, 'dashboard.calendar', 5, 'lucide-calendar');
         // Settings page for user profile
-        $settingsId = $this->upsertMenu('Setting', null, 'dashboard.settings', 90, 'feathericon-settings');
+        $settingsId = $this->upsertMenu('Setting', null, 'dashboard.settings', 90, 'lucide-settings');
         // Root: Logout (special handling in menus view renders POST form)
-        $logoutId = $this->upsertMenu('Logout', null, 'logout', 99, 'feathericon-log-out');
+        $logoutId = $this->upsertMenu('Logout', null, 'logout', 99, 'lucide-log-out');
 
         // Assign these menus to 'user' role
         // $userRoleId = DB::table('roles')->where('name', 'user')->value('id');

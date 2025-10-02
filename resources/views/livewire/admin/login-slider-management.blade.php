@@ -83,8 +83,8 @@
                                     <tr>
                                         <td>
                                             <a href="{{ $imageUrl }}" target="_blank">
-                                                <div class="w-16 h-16 overflow-hidden bg-base-200 rounded-xl">
-                                                    <img src="{{ $imageUrl }}" alt="{{ $slide->title ?? 'Slide' }}" class="object-cover w-full h-full">
+                                                <div class="w-16 aspect-[4/5] overflow-hidden bg-base-200 rounded-xl relative">
+                                                    <img src="{{ $imageUrl }}" alt="{{ $slide->title ?? 'Slide' }}" class="absolute inset-0 w-full h-full object-cover">
                                                 </div>
                                             </a>
                                         </td>
@@ -217,7 +217,7 @@
                 <div class="form-control md:col-span-2">
                     <label class="label"><span class="label-text">Gambar</span></label>
                     <input type="file" class="file-input file-input-bordered w-full bg-white border border-base-200" accept="image/png,image/jpeg,image/webp" wire:model="image">
-                    <span class="text-xs text-base-content/60 mt-1">Format JPG, PNG, atau WEBP maks. 4 MB.</span>
+                    <span class="text-xs text-base-content/60 mt-1">Format JPG, PNG, atau WEBP maks. 4 MB. Rekomendasi ukuran 1080x1350 piksel (rasio 4:5).</span>
                     @error('image')
                         <span class="text-error text-sm mt-1">{{ $message }}</span>
                     @enderror
@@ -228,8 +228,8 @@
                         @if ($image)
                             <div>
                                 <p class="text-sm mb-2 text-base-content/70">Gambar baru</p>
-                                <div class="rounded-xl overflow-hidden border border-base-300">
-                                    <img src="{{ $image->temporaryUrl() }}" class="object-cover w-full h-48" alt="Preview sementara">
+                                <div class="rounded-xl overflow-hidden border border-base-300 relative aspect-[4/5] w-full">
+                                    <img src="{{ $image->temporaryUrl() }}" class="absolute inset-0 object-cover w-full h-full" alt="Preview sementara">
                                 </div>
                             </div>
                         @endif
@@ -240,8 +240,8 @@
                             @endphp
                             <div>
                                 <p class="text-sm mb-2 text-base-content/70">Gambar saat ini</p>
-                                <div class="rounded-xl overflow-hidden border border-base-300">
-                                    <img src="{{ $existingUrl }}" class="object-cover w-full h-48" alt="Preview saat ini">
+                                <div class="rounded-xl overflow-hidden border border-base-300 relative aspect-[4/5] w-full">
+                                    <img src="{{ $existingUrl }}" class="absolute inset-0 object-cover w-full h-full" alt="Preview saat ini">
                                 </div>
                             </div>
                         @endif

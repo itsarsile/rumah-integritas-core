@@ -41,6 +41,7 @@
                         <th>Nama</th>
                         <th>Kode</th>
                         <th>Induk</th>
+                        <th>Jumlah User</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -52,13 +53,48 @@
                             <td>
                                 {{ optional($divisions->firstWhere('id', $d->parent_div_id))->name ?? '—' }}
                             </td>
+                            <td>
+                                <span class="badge badge-ghost">{{ $d->users_count }}</span>
+                            </td>
                             <td class="text-right">
                                 <button class="btn btn-xs" wire:click="edit({{ $d->id }})">Ubah</button>
+                                <button class="btn btn-xs btn-outline ml-2" wire:click="openUsersModal({{ $d->id }})">Kelola User</button>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
+    </div>
+
+    {{-- Modal Kelola User Divisi --}}
+    <div class="modal" x-data="{ open: @entangle('showUsersModal') }" :class="{ 'modal-open': open }" x-cloak>
+        <div class="modal-box max-w-3xl">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h3 class="text-lg font-semibold">Kelola Anggota Divisi</h3>
+                    <p class="text-sm text-base-content/60">Pilih pengguna yang menjadi anggota divisi ini</p>
+                </div>
+                <button type="button" class="btn btn-sm btn-ghost" wire:click="closeUsersModal">Tutup</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-96 overflow-y-auto pr-2">
+                @foreach($allUsers as $u)
+                    <label class="flex items-center gap-3 p-2 rounded-lg hover:bg-base-200">
+                        <input type="checkbox" class="checkbox" value="{{ $u->id }}" wire:model="selectedUserIds">
+                        <div>
+                            <div class="font-medium">{{ $u->name }}</div>
+                            <div class="text-xs text-base-content/60">{{ $u->email }}</div>
+                        </div>
+                    </label>
+                @endforeach
+            </div>
+
+            <div class="modal-action">
+                <button class="btn btn-ghost" type="button" wire:click="closeUsersModal">Batal</button>
+                <button class="btn btn-primary" type="button" wire:click="saveDivisionUsers">Simpan</button>
+            </div>
+        </div>
+        <label class="modal-backdrop" wire:click="closeUsersModal">Close</label>
     </div>
 </div>

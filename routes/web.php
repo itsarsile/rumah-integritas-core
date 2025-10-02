@@ -16,6 +16,8 @@ use App\Livewire\Admin\RequestTracking as AdminRequestTracking;
 use App\Livewire\Account\Settings as AccountSettings;
 use App\Livewire\Admin\AccessControl as AdminAccessControl;
 use App\Livewire\Admin\LoginSliderManagement;
+use App\Livewire\Calendar\Board as CalendarBoard;
+use App\Http\Controllers\CalendarController;
 use App\Models\AuditReports;
 use App\Models\ChatMessage;
 use Illuminate\Support\Facades\Route;
@@ -80,6 +82,11 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
 
     Route::get('/appearance/login-slider', LoginSliderManagement::class)
         ->name('dashboard.login-slider');
+
+    // Dedicated Calendar page
+    Route::get('/calendar', CalendarBoard::class)->name('dashboard.calendar');
+    Route::get('/calendar/events', [CalendarController::class, 'events'])->name('dashboard.calendar.events');
+    Route::post('/calendar/toggle', [CalendarController::class, 'toggle'])->name('dashboard.calendar.toggle');
 
     // Master Data
     Route::prefix('/master-data')->group(function () {

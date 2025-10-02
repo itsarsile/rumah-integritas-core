@@ -196,16 +196,25 @@
         mode: "0775"
         recurse: yes
 
-    - name: Migrate existing app storage to shared (one-time)
+    - name: Stat app storage
+      stat:
+        path: "{{ app_root }}/storage"
+      register: app_storage_stat
+
+    - name: Migrate existing app storage to shared (safe copy)
       shell: |
-        set -e
-        if [ ! -L "{{ app_root }}/storage" ] && [ -d "{{ app_root }}/storage" ]; then
-          shopt -s dotglob || true
-          mv "{{ app_root }}/storage"/* "{{ shared_storage }}/" 2>/dev/null || true
-          rmdir "{{ app_root }}/storage" 2>/dev/null || true
-        fi
+        set -euo pipefail
+        shopt -s dotglob || true
+        cp -a "{{ app_root }}/storage/." "{{ shared_storage }}/" || true
       args:
         executable: /bin/bash
+      when: app_storage_stat.stat.isdir | default(false) and not (app_storage_stat.stat.islnk | default(false))
+
+    - name: Remove app storage directory to create symlink
+      file:
+        path: "{{ app_root }}/storage"
+        state: absent
+      when: app_storage_stat.stat.isdir | default(false) and not (app_storage_stat.stat.islnk | default(false))
 
     - name: Symlink app storage to shared
       file:

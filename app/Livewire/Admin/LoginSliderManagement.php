@@ -219,7 +219,14 @@ class LoginSliderManagement extends Component
             'button_url' => 'nullable|url|max:255',
             'display_order' => 'nullable|integer|min:0|max:1000',
             'is_active' => 'required|boolean',
-            'image' => [$this->editingSlideId ? 'nullable' : 'required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            // Enforce 4:5 ratio and at least 1080x1350 pixels
+            'image' => [
+                $this->editingSlideId ? 'nullable' : 'required',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:4096',
+                'dimensions:min_width=1080,min_height=1350,ratio=4/5',
+            ],
         ];
     }
 
